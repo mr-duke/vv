@@ -6,9 +6,7 @@ import java.util.List;
 public class Mitarbeiterverwaltung {
 
     private static Mitarbeiterverwaltung mitarbeiterverwaltung = null;
-
     private List<Mitarbeiter> mitarbeiter;
-
     private Mitarbeiterverwaltung(){
         mitarbeiter = new LinkedList<>();
     }
@@ -20,22 +18,21 @@ public class Mitarbeiterverwaltung {
     }
 
     public void notify (Ereignis e){
-        if (mitarbeiter.isEmpty()){
+        Mitarbeiter m = filterMitarbeiter(e);
+        if (m == null)
             mitarbeiter.add(new Mitarbeiter(e.getMitarbeiterId()));
-            return;
-        }
-
-        for(Mitarbeiter m : mitarbeiter) {
-            if (m.getId().equals(e.getMitarbeiterId())) {
-                m.bewegen(m.getAktuellerZustand(), e.getRichtung());
-                return;
-            }
-        }
-        mitarbeiter.add(new Mitarbeiter(e.getMitarbeiterId()));
-
+        else
+            m.bewegen(m.getAktuellerZustand(), e.getRichtung());
     }
 
     public List<Mitarbeiter> getMitarbeiter() {
         return mitarbeiter;
+    }
+
+    private Mitarbeiter filterMitarbeiter(Ereignis e) {
+        return mitarbeiter.stream()
+                    .filter(mit -> mit.getId().equals(e.getMitarbeiterId()))
+                    .findAny()
+                    .orElse(null);
     }
 }
