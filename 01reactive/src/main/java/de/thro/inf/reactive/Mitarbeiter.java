@@ -1,13 +1,11 @@
 package de.thro.inf.reactive;
 
-import java.util.UUID;
-
 public class Mitarbeiter {
-    private String uuidAsString;
+    private String id;
     private Zustand aktuellerZustand;
 
-    public Mitarbeiter() {
-        this.uuidAsString = UUID.randomUUID().toString();
+    public Mitarbeiter(String id){
+        this.id = id;
         this.aktuellerZustand = Zustand.ABWESEND;
     }
 
@@ -31,7 +29,5 @@ public class Mitarbeiter {
         return aktuellerZustand;
     }
 
-    public String getUuidAsString(){
-        return uuidAsString;
-    }
+    public String getId(){ return id; }
 }

@@ -8,7 +8,7 @@ public class MitarbeiterTest {
 
     @Test
     public void zustandShouldBeImGang(){
-        Mitarbeiter m = new Mitarbeiter();
+        Mitarbeiter m = new Mitarbeiter("01-02-03-aa-bb-cc");
         m.bewegen(m.getAktuellerZustand(), Mitarbeiter.Richtung.LINKS);
         assertEquals(Mitarbeiter.Zustand.IMGANG, m.getAktuellerZustand());
         m.bewegen(m.getAktuellerZustand(), Mitarbeiter.Richtung.RECHTS);
@@ -18,7 +18,7 @@ public class MitarbeiterTest {
 
     @Test
     public void zustandShouldBeAbwesend(){
-        Mitarbeiter m = new Mitarbeiter();
+        Mitarbeiter m = new Mitarbeiter("01-02-03-aa-bb-cc");
         assertEquals(Mitarbeiter.Zustand.ABWESEND, m.getAktuellerZustand());
         m.bewegen(m.getAktuellerZustand(), Mitarbeiter.Richtung.LINKS);
         m.bewegen(m.getAktuellerZustand(), Mitarbeiter.Richtung.LINKS);
@@ -27,7 +27,7 @@ public class MitarbeiterTest {
 
     @Test
     public void zustandShouldBeAnwesend(){
-        Mitarbeiter m = new Mitarbeiter();
+        Mitarbeiter m = new Mitarbeiter("01-02-03-aa-bb-cc");
         m.bewegen(m.getAktuellerZustand(), Mitarbeiter.Richtung.LINKS);
         m.bewegen(m.getAktuellerZustand(), Mitarbeiter.Richtung.RECHTS);
         assertEquals(Mitarbeiter.Zustand.ANWESEND, m.getAktuellerZustand());
@@ -35,13 +35,13 @@ public class MitarbeiterTest {
 
     @Test (expected = IllegalArgumentException.class)
     public void shouldThrowIllegalArgumentExceptionIfRechtsIsFirst(){
-        Mitarbeiter m = new Mitarbeiter();
+        Mitarbeiter m = new Mitarbeiter("01-02-03-aa-bb-cc");
         m.bewegen(m.getAktuellerZustand(), Mitarbeiter.Richtung.RECHTS);
     }
 
     @Test (expected = IllegalArgumentException.class)
     public void shouldThrowIllegalArgumentExceptionIfIllegalMovement(){
-        Mitarbeiter m = new Mitarbeiter();
+        Mitarbeiter m = new Mitarbeiter("01-02-03-aa-bb-cc");
         m.bewegen(m.getAktuellerZustand(), Mitarbeiter.Richtung.LINKS);
         m.bewegen(m.getAktuellerZustand(), Mitarbeiter.Richtung.RECHTS);
         m.bewegen(m.getAktuellerZustand(), Mitarbeiter.Richtung.LINKS);
