@@ -1,7 +1,6 @@
 package de.thro.inf.reactive;
 
 import org.apache.log4j.Logger;
-import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -13,24 +12,30 @@ public class Mitarbeiterverwaltung {
 
     private static Mitarbeiterverwaltung mitarbeiterverwaltung = null;
     private List<Mitarbeiter> mitarbeiter;
-    private Mitarbeiterverwaltung() throws IOException {
+    private Mitarbeiterverwaltung() {
         mitarbeiter = new LinkedList<>();
     }
 
-    public static Mitarbeiterverwaltung getMitarbeiterverwaltung() throws IOException {
+    public static Mitarbeiterverwaltung getMitarbeiterverwaltung() {
         if (mitarbeiterverwaltung == null)
             mitarbeiterverwaltung = new Mitarbeiterverwaltung();
-        SYSTEM_LOGGER.debug("Mitarbeiterverwaltung gestartet");
+        SYSTEM_LOGGER.info("Mitarbeiterverwaltung gestartet");
         return mitarbeiterverwaltung;
     }
 
     public void notify (Ereignis e){
         Mitarbeiter m = filterMitarbeiter(e);
-        if (m == null)
-            mitarbeiter.add(new Mitarbeiter(e.getMitarbeiterId()));
-        else
+        String mitarbeiterID = m.getId();
+
+        EVENTS_LOGGER.info(String.format("Mitarbeiter (%s) geht %s", mitarbeiterID, e.getRichtung()));
+        try {
             m.bewegen(m.getAktuellerZustand(), e.getRichtung());
-        EVENTS_LOGGER.info("Mitarbeiter neu angelegt");
+        }
+        catch (IllegalArgumentException ex) {
+            EVENTS_LOGGER.error(String.format("Mitarbeiter (%s) %s", mitarbeiterID, ex.getMessage()));
+        }
+        EVENTS_LOGGER.info(String.format("Mitarbeiter (%s) aktueller Zustand: %s", mitarbeiterID, m.getAktuellerZustand()));
+
     }
 
     public List<Mitarbeiter> getMitarbeiter() {
@@ -38,9 +43,17 @@ public class Mitarbeiterverwaltung {
     }
 
     private Mitarbeiter filterMitarbeiter(Ereignis e) {
-        return mitarbeiter.stream()
-                    .filter(mit -> mit.getId().equals(e.getMitarbeiterId()))
-                    .findAny()
-                    .orElse(null);
+        String mitarbeiterId = e.getMitarbeiterId();
+        Mitarbeiter m = mitarbeiter.stream()
+                .filter(mit -> mit.getId().equals(mitarbeiterId))
+                .findAny()
+                .orElse(null);
+
+        if (m == null) {
+            m = new Mitarbeiter(mitarbeiterId);
+            EVENTS_LOGGER.info(String.format("Mitarbeiter mit ID %s neu angelegt", mitarbeiterId));
+            mitarbeiter.add(m);
+        }
+        return m;
     }
 }
