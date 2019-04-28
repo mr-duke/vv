@@ -13,6 +13,8 @@
 *.tar.gz
 *.rar
 
+#Logs
+logs/
 
 #Gradle
 .gradle
