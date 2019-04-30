@@ -2,7 +2,7 @@ plugins {
     id 'java'
 }
 
-group 'de.thro.vv.uebung05'
+group 'de.thro.vv.herzog'
 version '1.0-SNAPSHOT'
 
 sourceCompatibility = 1.8
