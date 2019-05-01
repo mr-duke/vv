@@ -1,17 +1,12 @@
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.InetAddress;
 import java.net.Socket;
 import java.util.Scanner;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.LinkedBlockingQueue;
 
-
-
-public class Client {
-
+public class Client2 {
     public static void main(String[] args) throws IOException, InterruptedException {
         BlockingQueue<String> outgoing = new LinkedBlockingQueue();
         BlockingQueue<String> incoming = new LinkedBlockingQueue();
@@ -52,7 +47,6 @@ public class Client {
         });
         receiver.start();
 
-        readConsole(outgoing); // ein Client muss den Anfang machen, sonst Deadlock!
         while (true) {
             while (incoming.peek() == null){
                 Thread.sleep(1000);
@@ -73,4 +67,3 @@ public class Client {
         outgoing.offer(message);
     }
 }
-
