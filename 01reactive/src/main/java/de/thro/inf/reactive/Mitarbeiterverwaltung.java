@@ -9,18 +9,20 @@ public class Mitarbeiterverwaltung {
 
     private static final Logger SYSTEM_LOGGER = Logger.getLogger("systemLogger");
     private static final Logger EVENTS_LOGGER = Logger.getLogger("eventLogger");
-
-    private static Mitarbeiterverwaltung mitarbeiterverwaltung = null;
     private List<Mitarbeiter> mitarbeiter;
+
+    // Implizit synchronisiertes Singleton
+    private static final class InstanceWrapper{
+        static final Mitarbeiterverwaltung INSTANCE = new Mitarbeiterverwaltung ();
+    }
+
     private Mitarbeiterverwaltung() {
         mitarbeiter = new LinkedList<>();
     }
 
     public static Mitarbeiterverwaltung getMitarbeiterverwaltung() {
-        if (mitarbeiterverwaltung == null)
-            mitarbeiterverwaltung = new Mitarbeiterverwaltung();
         SYSTEM_LOGGER.info("Mitarbeiterverwaltung gestartet");
-        return mitarbeiterverwaltung;
+        return InstanceWrapper.INSTANCE;
     }
 
     public void notify (Ereignis e){
