@@ -25,12 +25,13 @@ public class Server {
         Thread serverSocketThread = new Thread(() -> provideServerSocket());
         serverSocketThread.start();
 
+        Mitarbeiterverwaltung mitarbeiterverwaltung = Mitarbeiterverwaltung.getMitarbeiterverwaltung();
+
         while (true){
             try {
                 Ereignis ereignis = incoming.take();
-                Mitarbeiterverwaltung mitarbeiterverwaltung = Mitarbeiterverwaltung.getMitarbeiterverwaltung();
                 mitarbeiterverwaltung.notify(ereignis);
-                
+
             } catch (InterruptedException ex) {
                 SYSTEM_LOGGER.error(ex.getMessage());
             }
@@ -51,6 +52,7 @@ public class Server {
         } catch (IOException ex) {
             SYSTEM_LOGGER.error(ex.getMessage());
         }
+        SYSTEM_LOGGER.info("Server beendet");
     }
 
     public static void readFromSocket(Socket client) {
