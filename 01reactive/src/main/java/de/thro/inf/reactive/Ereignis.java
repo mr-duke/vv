@@ -5,6 +5,8 @@ public class Ereignis {
     private String mitarbeiterId;
     private Mitarbeiter.Richtung richtung;
 
+    public Ereignis () {};
+
     public Ereignis(String mitarbeiterId, Mitarbeiter.Richtung richtung){
         this.mitarbeiterId = mitarbeiterId;
         this.richtung = richtung;
@@ -18,4 +20,11 @@ public class Ereignis {
         return richtung;
     }
 
+    public void setMitarbeiterId(String mitarbeiterId) {
+        this.mitarbeiterId = mitarbeiterId;
+    }
+
+    public void setRichtung(Mitarbeiter.Richtung richtung) {
+        this.richtung = richtung;
+    }
 }
