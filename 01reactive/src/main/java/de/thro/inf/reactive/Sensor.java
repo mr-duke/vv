@@ -3,6 +3,7 @@ package de.thro.inf.reactive;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import configuration.FromConsole;
+import configuration.FromFile;
 import configuration.IConfiguration;
 import org.apache.log4j.Logger;
 
@@ -25,7 +26,7 @@ public class Sensor {
     private static final Logger SYSTEM_LOGGER = Logger.getLogger("systemLogger");
     private static final Logger EVENTS_LOGGER = Logger.getLogger("eventLogger");
     private static BlockingQueue<String> outgoing = new LinkedBlockingQueue<>();
-    private static IConfiguration config = new FromConsole();
+    private static IConfiguration config = new FromFile();
 
 
     public static void main(String[] args) {
@@ -84,15 +85,17 @@ public class Sensor {
     }
 
     private static void readFromInput (Scanner scanner){
-        String message = scanner.nextLine();
-        if(validInputCheck(message)) {
-            try {
-                outgoing.put(message);
-            } catch (InterruptedException ex) {
-                SYSTEM_LOGGER.error(ex.getMessage());
-            }
-        } else
-            return;
+        if(scanner.hasNext()){
+            String message = scanner.nextLine();
+            if(validInputCheck(message)) {
+                try {
+                    outgoing.put(message);
+                } catch (InterruptedException ex) {
+                    SYSTEM_LOGGER.error(ex.getMessage());
+                }
+            } else
+                return;
+        }
     }
 
     private static boolean validInputCheck (String input) {
