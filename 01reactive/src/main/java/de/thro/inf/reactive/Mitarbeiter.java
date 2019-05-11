@@ -22,7 +22,6 @@ public class Mitarbeiter {
         if (neuerZustand == Zustand.ERROR)
             throw new IllegalArgumentException("Richtung nicht möglich!");
         aktuellerZustand = neuerZustand;
-
     }
 
     public Zustand getAktuellerZustand(){

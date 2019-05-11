@@ -28,10 +28,11 @@ public class Mitarbeiterverwaltung {
     public void notify (Ereignis e){
         Mitarbeiter m = filterMitarbeiter(e);
         String mitarbeiterID = m.getId();
+        Mitarbeiter.Richtung richtung = e.getRichtung();
 
-        EVENTS_LOGGER.info(String.format("Mitarbeiter (%s) geht %s", mitarbeiterID, e.getRichtung()));
+        EVENTS_LOGGER.info(String.format("Mitarbeiter (%s) geht %s", mitarbeiterID, richtung));
         try {
-            m.bewegen(m.getAktuellerZustand(), e.getRichtung());
+            m.bewegen(m.getAktuellerZustand(), richtung);
         }
         catch (IllegalArgumentException ex) {
             EVENTS_LOGGER.error(String.format("Mitarbeiter (%s) %s", mitarbeiterID, ex.getMessage()));

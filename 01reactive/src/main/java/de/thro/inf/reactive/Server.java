@@ -32,7 +32,8 @@ public class Server {
                 Ereignis ereignis = incoming.take();
                 mitarbeiterverwaltung.notify(ereignis);
 
-            } catch (InterruptedException ex) {
+            }
+            catch (InterruptedException ex) {
                 SYSTEM_LOGGER.error(ex.getMessage());
             }
         }
@@ -65,7 +66,6 @@ public class Server {
                 Ereignis ereignis = gson.fromJson(message, Ereignis.class);
                 incoming.put(ereignis);
             }
-
 
         } catch (IOException | InterruptedException ex) {
             SYSTEM_LOGGER.error(ex.getMessage());
