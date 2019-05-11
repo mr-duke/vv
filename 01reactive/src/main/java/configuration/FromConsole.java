@@ -15,6 +15,7 @@ public class FromConsole implements IConfiguration {
     private static final Logger EVENTS_LOGGER = Logger.getLogger("eventLogger");
 
     private Properties prop = null;
+    private final InputStream INPUT_STREAM = System.in;
 
     @Override
     public void loadPropertiesFile() {
@@ -50,5 +51,10 @@ public class FromConsole implements IConfiguration {
         loadPropertiesFile();
         int port = Integer.parseInt(prop.getProperty("port"));
         return port;
+    }
+
+    @Override
+    public InputStream getInputStream() {
+        return INPUT_STREAM;
     }
 }
