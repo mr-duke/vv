@@ -15,19 +15,17 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 public class Sensor {
 
-    private SensorArt sensorArt;
+    private static final Logger SYSTEM_LOGGER = Logger.getLogger("systemLogger");
+    private static final String SHUTDOWN_KEY = "QUIT";
+    private static BlockingQueue<String> outgoing = new LinkedBlockingQueue<>();
+    /* Hier wird Config-Art festgelegt: FromConsole oder FromFile*/
+    private static IConfiguration config = new FromConsole();
 
+    private SensorArt sensorArt;
     public enum SensorArt {LINKS, RECHTS};
     private Sensor(SensorArt sensorArt) {
-
         this.sensorArt = sensorArt;
     }
-
-    private static final Logger SYSTEM_LOGGER = Logger.getLogger("systemLogger");
-    private static final Logger EVENTS_LOGGER = Logger.getLogger("eventLogger");
-    private static BlockingQueue<String> outgoing = new LinkedBlockingQueue<>();
-    private static IConfiguration config = new FromFile();
-
 
     public static void main(String[] args) {
         Sensor sensor = new Sensor(config.getSensorArt());
@@ -61,7 +59,7 @@ public class Sensor {
             while (true) {
                 String jsonString = outgoing.take();
 
-                if (jsonString.equals("QUIT")){
+                if (jsonString.equals(SHUTDOWN_KEY)){
                     writeToOutputStream(output, jsonString);
                     shutdownSensor(socket, sensor);
 
@@ -85,21 +83,20 @@ public class Sensor {
     }
 
     private static void readFromInput (Scanner scanner){
-        if(scanner.hasNext()){
+        if(scanner.hasNext()) {
             String message = scanner.nextLine();
-            if(validInputCheck(message)) {
+            if (validInputCheck(message)) {
                 try {
                     outgoing.put(message);
                 } catch (InterruptedException ex) {
                     SYSTEM_LOGGER.error(ex.getMessage());
                 }
-            } else
-                return;
+            }
         }
     }
 
     private static boolean validInputCheck (String input) {
-        if (input.equals("QUIT"))
+        if (input.equals(SHUTDOWN_KEY))
             return true;
 
         // Neue Zeile einlesen, falls JSON Syntax Fehler

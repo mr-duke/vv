@@ -14,7 +14,11 @@ import java.util.Properties;
 public class FromFile implements IConfiguration {
 
     private static final Logger SYSTEM_LOGGER = Logger.getLogger("systemLogger");
-    private static final Logger EVENTS_LOGGER = Logger.getLogger("eventLogger");
+    private final String FROM_FILE_PROPERTIES_KEY = "fromFile.properties";
+    private final String SENSOR_ART_PROPERTY_KEY =  "sensorArt";
+    private final String INET_ADDR_PROPERTY_KEY = "inetAddress";
+    private final String PORT_PROPERTY_KEY = "port";
+    private final String FILE_NAME_PROPERTY_KEY = "fileName";
 
     private Properties prop = null;
     private InputStream INPUT_STREAM = null;
@@ -30,7 +34,7 @@ public class FromFile implements IConfiguration {
     @Override
     public void loadPropertiesFile() {
         prop = new Properties();
-        try (InputStream input = FromConsole.class.getClassLoader().getResourceAsStream("fromFile.properties")){
+        try (InputStream input = FromConsole.class.getClassLoader().getResourceAsStream(FROM_FILE_PROPERTIES_KEY)){
             prop.load(input);
 
         } catch (IOException ex) {
@@ -41,7 +45,7 @@ public class FromFile implements IConfiguration {
     @Override
     public Sensor.SensorArt getSensorArt() {
         loadPropertiesFile();
-        return Sensor.SensorArt.valueOf(prop.getProperty("sensorArt"));
+        return Sensor.SensorArt.valueOf(prop.getProperty(SENSOR_ART_PROPERTY_KEY));
     }
 
     @Override
@@ -49,7 +53,7 @@ public class FromFile implements IConfiguration {
         loadPropertiesFile();
         InetAddress inetAddress = null;
         try {
-            inetAddress = InetAddress.getByName(prop.getProperty("inetAddress"));
+            inetAddress = InetAddress.getByName(prop.getProperty(INET_ADDR_PROPERTY_KEY));
         } catch (UnknownHostException ex) {
             SYSTEM_LOGGER.error(ex.getMessage());
         }
@@ -59,7 +63,7 @@ public class FromFile implements IConfiguration {
     @Override
     public int getPortNumber() {
         loadPropertiesFile();
-        int port = Integer.parseInt(prop.getProperty("port"));
+        int port = Integer.parseInt(prop.getProperty(PORT_PROPERTY_KEY));
         return port;
     }
 
@@ -71,7 +75,7 @@ public class FromFile implements IConfiguration {
 
     private File createFile(){
         loadPropertiesFile();
-        String fileName = prop.getProperty("fileName");
+        String fileName = prop.getProperty(FILE_NAME_PROPERTY_KEY);
         URL fileLocation = getClass().getClassLoader().getResource(fileName);
         File file = null;
         {
