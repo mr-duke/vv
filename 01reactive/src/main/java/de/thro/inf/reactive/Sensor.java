@@ -19,7 +19,7 @@ public class Sensor {
     private static final String SHUTDOWN_KEY = "QUIT";
     private static BlockingQueue<String> outgoing = new LinkedBlockingQueue<>();
     /* Hier wird Config-Art festgelegt: FromConsole oder FromFile*/
-    private static IConfiguration config = new FromConsole();
+    private static IConfiguration config = new FromFile();
 
     private SensorArt sensorArt;
     public enum SensorArt {LINKS, RECHTS};
