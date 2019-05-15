@@ -2,6 +2,7 @@ package de.thro.inf.reactive;
 
 public class Ereignis {
 
+    //Kommentar hinzu
     private String mitarbeiterId;
     private Mitarbeiter.Richtung richtung;
 

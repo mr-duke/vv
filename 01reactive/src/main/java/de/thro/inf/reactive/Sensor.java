@@ -19,11 +19,12 @@ public class Sensor {
     private static final String SHUTDOWN_KEY = "QUIT";
     private static BlockingQueue<String> outgoing = new LinkedBlockingQueue<>();
     /* Hier wird Config-Art festgelegt: FromConsole oder FromFile*/
-    private static IConfiguration config = new FromFile();
+    private static IConfiguration config = new FromConsole();
 
     private SensorArt sensorArt;
     public enum SensorArt {LINKS, RECHTS};
     private Sensor(SensorArt sensorArt) {
+
         this.sensorArt = sensorArt;
     }
 
@@ -52,7 +53,7 @@ public class Sensor {
         }
         createOutputStream(sensor, socket);
     }
-
+        // Name ändern
     private static void createOutputStream(Sensor sensor, Socket socket) {
         try (OutputStream output = socket.getOutputStream()) {
 
@@ -75,6 +76,7 @@ public class Sensor {
     private static void writeToOutputStream(OutputStream output, String jsonString)  {
         try {
             output.write(jsonString.getBytes());
+            // Kommentar
             output.write("\r\n".getBytes());
             output.flush();
         } catch (IOException ex) {
