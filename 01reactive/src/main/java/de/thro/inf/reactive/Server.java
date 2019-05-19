@@ -2,6 +2,7 @@ package de.thro.inf.reactive;
 
 import com.google.gson.Gson;
 import configuration.FromConsole;
+import configuration.FromFile;
 import configuration.IConfiguration;
 import org.apache.log4j.Logger;
 
@@ -20,17 +21,15 @@ public class Server {
     private static final Logger SYSTEM_LOGGER = Logger.getLogger("systemLogger");
     private static BlockingQueue<Ereignis> incoming = new LinkedBlockingQueue<>();
     private static Executor exec = Executors.newCachedThreadPool();
+
     // Hier wird Config-Art festgelegt: new FromConsole() oder new FromFile()
     // Config liest mithilfe von Properties-File nötige Konfigurationsinfos aus
     private static IConfiguration config = new FromConsole();
 
     public static void main(String[] args) {
-        //Thread serverSocketThread = new Thread(() -> provideServerSocket());
-        //serverSocketThread.start();
         exec.execute(() -> provideServerSocket());
 
         Mitarbeiterverwaltung mitarbeiterverwaltung = Mitarbeiterverwaltung.getMitarbeiterverwaltung();
-
         while (true){
             try {
                 Ereignis ereignis = incoming.take();

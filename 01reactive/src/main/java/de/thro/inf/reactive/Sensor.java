@@ -3,6 +3,7 @@ package de.thro.inf.reactive;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import configuration.FromConsole;
+import configuration.FromFile;
 import configuration.IConfiguration;
 import org.apache.log4j.Logger;
 
@@ -35,8 +36,6 @@ public class Sensor {
     public static void main(String[] args) {
         Sensor sensor = new Sensor(config.getSensorArt());
         exec.execute(() -> provideClientSocket(sensor));
-        //Thread clientThread = new Thread(() -> provideClientSocket(sensor));
-        //clientThread.start();
 
         Scanner scanner = new Scanner(config.getInputStream());
         while (true){
