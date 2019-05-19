@@ -11,6 +11,8 @@ import java.net.UnknownHostException;
 import java.nio.file.Paths;
 import java.util.Properties;
 
+// Lese Eingaben des Sensors aus File aus
+// Konfiguration durch Properties-File "fromFile.properties"
 public class FromFile implements IConfiguration {
 
     private static final Logger SYSTEM_LOGGER = Logger.getLogger("systemLogger");
@@ -25,21 +27,10 @@ public class FromFile implements IConfiguration {
 
     public FromFile() {
         try {
-            INPUT_STREAM = new FileInputStream(createFile());
+            INPUT_STREAM = new FileInputStream(provideFile());
         } catch (FileNotFoundException ex) {
             SYSTEM_LOGGER.error(ex.getMessage());
         }
-    }
-
-    @Override
-    public void loadPropertiesFile() {
-        prop = new Properties();
-        try (InputStream input = FromConsole.class.getClassLoader().getResourceAsStream(FROM_FILE_PROPERTIES_KEY)){
-            prop.load(input);
-
-        } catch (IOException ex) {
-            SYSTEM_LOGGER.error(ex.getMessage());
-        } ;
     }
 
     @Override
@@ -72,8 +63,18 @@ public class FromFile implements IConfiguration {
         return INPUT_STREAM;
     }
 
+    private void loadPropertiesFile() {
+        prop = new Properties();
+        try (InputStream input = FromConsole.class.getClassLoader().getResourceAsStream(FROM_FILE_PROPERTIES_KEY)){
+            prop.load(input);
 
-    private File createFile(){
+        } catch (IOException ex) {
+            SYSTEM_LOGGER.error(ex.getMessage());
+        } ;
+    }
+
+    // Suche nach File-Namen im Properties-File und erzeuge daraus File für den InputStream
+    private File provideFile(){
         loadPropertiesFile();
         String fileName = prop.getProperty(FILE_NAME_PROPERTY_KEY);
         URL fileLocation = getClass().getClassLoader().getResource(fileName);

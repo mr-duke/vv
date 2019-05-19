@@ -7,13 +7,11 @@ import java.net.InetAddress;
 
 public interface IConfiguration {
 
-    public void loadPropertiesFile();
+    Sensor.SensorArt getSensorArt();
 
-    public Sensor.SensorArt getSensorArt();
+    InetAddress getInetAdress();
 
-    public InetAddress getInetAdress();
+    int getPortNumber();
 
-    public int getPortNumber();
-
-    public InputStream getInputStream();
+    InputStream getInputStream();
 }
