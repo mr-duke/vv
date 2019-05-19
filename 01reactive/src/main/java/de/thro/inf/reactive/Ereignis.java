@@ -2,8 +2,9 @@ package de.thro.inf.reactive;
 
 public class Ereignis {
 
-    //Kommentar hinzu
+    // mitarbeiterId soll als MAC-Adresse im Format "11-22-33-aa-bb-cc" dargestellt werden
     private String mitarbeiterId;
+    // Gibt an, ob Mitarbeiter am linken oder am rechten Sensor vorbeiläuft
     private Mitarbeiter.Richtung richtung;
 
     public Ereignis () {};

@@ -11,13 +11,15 @@ public class Mitarbeiterverwaltung {
     private static final Logger EVENTS_LOGGER = Logger.getLogger("eventLogger");
     private List<Mitarbeiter> mitarbeiter;
 
-    // Implizit synchronisiertes Singleton
-    private static final class InstanceWrapper{
-        static final Mitarbeiterverwaltung INSTANCE = new Mitarbeiterverwaltung ();
-    }
-
     private Mitarbeiterverwaltung() {
         mitarbeiter = new LinkedList<>();
+    }
+
+    /* Implizit synchronisiertes Singleton:
+     Initialisieren der Klassenvariablen vom ClassLoader implizit synchronisiert
+     Singleton-Konstruktor wird erst in der getMitarbeiterverwaltung aufgerufen */
+    private static final class InstanceWrapper{
+        static final Mitarbeiterverwaltung INSTANCE = new Mitarbeiterverwaltung ();
     }
 
     public static Mitarbeiterverwaltung getMitarbeiterverwaltung() {
@@ -25,12 +27,13 @@ public class Mitarbeiterverwaltung {
         return InstanceWrapper.INSTANCE;
     }
 
+    // Verarbeite übergebenes Ereignis-Objekt und bewege Mitarbeiter entsprechend
     public void notify (Ereignis e){
         Mitarbeiter m = filterMitarbeiter(e);
         String mitarbeiterID = m.getId();
         Mitarbeiter.Richtung richtung = e.getRichtung();
 
-        EVENTS_LOGGER.info(String.format("Mitarbeiter (%s) geht %s", mitarbeiterID, richtung));
+        EVENTS_LOGGER.info(String.format("Mitarbeiter (%s) geht an Sensor %s vorbei", mitarbeiterID, richtung));
         try {
             m.bewegen(m.getAktuellerZustand(), richtung);
         }
@@ -45,6 +48,7 @@ public class Mitarbeiterverwaltung {
         return mitarbeiter;
     }
 
+    // Suche in List<Mitarbeiter>, ob Mitarbeiter bereits vorhanden. Ansonsten lege Mitarbeiter neu an
     private Mitarbeiter filterMitarbeiter(Ereignis e) {
         String mitarbeiterId = e.getMitarbeiterId();
         Mitarbeiter m = mitarbeiter.stream()
