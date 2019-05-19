@@ -18,7 +18,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class Server {
 
     private static final Logger SYSTEM_LOGGER = Logger.getLogger("systemLogger");
-    private static final Logger EVENTS_LOGGER = Logger.getLogger("eventLogger");
 
     private static BlockingQueue<Ereignis> incoming = new LinkedBlockingQueue<>();
     private static Executor exec = Executors.newCachedThreadPool();

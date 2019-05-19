@@ -53,7 +53,7 @@ public class Sensor {
         }
         createOutputStream(sensor, socket);
     }
-        // Name ändern
+    // Name ändern
     private static void createOutputStream(Sensor sensor, Socket socket) {
         try (OutputStream output = socket.getOutputStream()) {
 
@@ -98,10 +98,17 @@ public class Sensor {
     }
 
     private static boolean validInputCheck (String input) {
+        // SHUTDOWN_KEY "QUIT" soll an Server weitergereicht werden als Signal, den Client-Socket geordnet zu schließen
         if (input.equals(SHUTDOWN_KEY))
             return true;
 
-        // Neue Zeile einlesen, falls JSON Syntax Fehler
+        // Falls keine korrekte Angabe des Sensors, return false und warte auf nächste Zeile
+        if (!input.contains("LINKS") && !input.contains("RECHTS")){
+            SYSTEM_LOGGER.error("Ungültige Eingabe der Sensorrichtung --> Lese nächste Zeile");
+            return false;
+        }
+        // Falls JSON Syntax Fehler, return false und warte danach auf nächste Zeile
+        // Falls JSON Syntax korrekt, return true und reiche danach input an BlockingQueue weiter
         Gson gson = new Gson();
         try {
             gson.fromJson(input, Ereignis.class);
