@@ -1,24 +1,40 @@
 package de.thro.inf.kunde;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequestMapping(value = "/api/v1") // Versionierung
+
+// Notiz: localhost:8080/swagger-ui.html
+// Notiz: SwaggerConfig
+
 public class KundeService {
 
-    @RequestMapping(value = "kunden/{nummer}",
-            method = RequestMethod.GET)
-    public Kunde huhu (@PathVariable("nummer") String ich) {
-        return new Kunde(Long.parseLong(ich), "Harry", "Hueller");
+    @Autowired // Dependency Injection
+    private KundeRepository repo;
+
+    @RequestMapping(
+            value = "kunden/{nummer}",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<Kunde> findKunde(@PathVariable("nummer") String nummer) {
+        Kunde k = repo.findById(Long.parseLong(nummer)).orElse(null);
+        return new ResponseEntity<>(k, HttpStatus.OK);
     }
 
-
-    @RequestMapping(value = "kunden",
+    @RequestMapping(
+            value = "kunden",
             method = RequestMethod.POST,
-            consumes = MediaType.APPLICATION_JSON_VALUE)
-    public Kunde huhu2 (@RequestBody Kunde kunde) {
-        kunde.setName("Thor");
-        return kunde;
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<Kunde> createKunde(@RequestBody Kunde kunde) {
+        repo.save(kunde);
+        return new ResponseEntity<>(kunde, HttpStatus.CREATED);
     }
 }
 
