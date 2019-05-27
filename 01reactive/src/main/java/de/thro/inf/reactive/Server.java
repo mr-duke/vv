@@ -6,6 +6,7 @@ import configuration.FromFile;
 import configuration.IConfiguration;
 import org.apache.log4j.Logger;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.ServerSocket;
@@ -23,7 +24,7 @@ public class Server {
     private static Executor exec = Executors.newCachedThreadPool();
 
     // Hier wird Config-Art festgelegt: new FromConsole() oder new FromFile()
-    // Config liest mithilfe von Properties-File nötige Konfigurationsinfos aus
+    // Config liest mithilfe von Properties-File die nötigen Konfigurationsinfos aus
     private static IConfiguration config = new FromConsole();
 
     public static void main(String[] args) {

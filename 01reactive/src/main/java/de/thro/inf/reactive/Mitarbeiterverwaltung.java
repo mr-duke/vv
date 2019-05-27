@@ -8,8 +8,8 @@ import java.util.List;
 public class Mitarbeiterverwaltung {
 
     /* Zwei Log4J-Logger (Speicherort im root-Verzeichnis unter "logs/")
-    * SYSTEM_LOGGER zum Loggen von System-Meldungen auf dem Level INFO und ERROR
-    * EVENT_LOGGER zum Loggen von Mitarbeiter-Bewegungen auf dem Level INFO und ERROR
+    * SYSTEM_LOGGER zum Loggen von System-Meldungen auf Level INFO und ERROR
+    * EVENT_LOGGER zum Loggen von Mitarbeiter-Bewegungen auf Level INFO und ERROR
     * */
     private static final Logger SYSTEM_LOGGER = Logger.getLogger("systemLogger");
     private static final Logger EVENTS_LOGGER = Logger.getLogger("eventLogger");

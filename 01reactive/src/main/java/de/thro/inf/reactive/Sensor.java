@@ -23,7 +23,7 @@ public class Sensor {
     private static Executor exec = Executors.newCachedThreadPool();
 
     // Hier wird Config-Art festgelegt: new FromConsole() oder new FromFile()
-    // Config liest mithilfe von Properties-File nötige Konfigurationsinfos aus
+    // Config liest mithilfe von Properties-File die nötigen Konfigurationsinfos aus
     private static IConfiguration config = new FromConsole();
 
     private SensorArt sensorArt;
