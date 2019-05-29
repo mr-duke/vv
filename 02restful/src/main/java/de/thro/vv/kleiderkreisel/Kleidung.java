@@ -22,6 +22,7 @@ public class Kleidung {
     private Geschlecht geschlecht;
     private Typ typ;
     private String hersteller;
+    // noch nicht
     private String foto;
     @Version
     private Long version;
@@ -38,6 +39,7 @@ public class Kleidung {
     }
 
     // Falls Foto nicht angegeben
+    // neupreis in eurocent als long
     public Kleidung(double neupreis, double tauschwert, Kleidergroesse groesse, Geschlecht geschlecht, Typ typ, String hersteller) {
         this (neupreis, tauschwert, groesse, geschlecht, typ, hersteller, null);
     }

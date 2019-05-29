@@ -17,8 +17,9 @@ public class Mitglied {
     private Adresse adresse;
 
     private String foto;
+    // kommt noch
     private String password;
-    // Kontostand in Euro
+    // Kontostand in Eurocent als long
     private double kontostand;
     @Version
     private Long version;
