@@ -1,19 +1,21 @@
 package de.thro.vv.kleiderkreisel;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Version;
+import javax.persistence.*;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
 public class Mitglied {
 
     @Id
-    private String nickname;
+    private Long nickname;
     private String nachname;
     private String vorname;
     private String email;
-    private String postAdresse;
+
+    @Embedded
+    private Adresse adresse;
+
     private String foto;
     private String password;
     // Kontostand in Euro
@@ -21,31 +23,34 @@ public class Mitglied {
     @Version
     private Long version;
 
+    @OneToMany(mappedBy = "besitzer")
+    List<Kleidung> vorrat;
+
     public Mitglied() {
     }
 
     // Falls Foto nicht angegeben
-    public Mitglied(String nickname, String nachname, String vorname, String email, String postAdresse, String password, double kontostand) {
-        this (nickname, nachname, vorname, email, postAdresse, null, password, kontostand);
+    public Mitglied(Long nickname, String nachname, String vorname, String email, Adresse adresse, String password, double kontostand) {
+        this (nickname, nachname, vorname, email, adresse, null, password, kontostand);
     }
 
-    public Mitglied(String nickname, String nachname, String vorname, String email, String postAdresse, String foto, String password, double kontostand) {
+    public Mitglied(Long nickname, String nachname, String vorname, String email, Adresse adresse, String foto, String password, double kontostand) {
         this.nickname = nickname;
         this.nachname = nachname;
         this.vorname = vorname;
         this.email = email;
-        this.postAdresse = postAdresse;
+        this.adresse = adresse;
         this.foto = foto;
         this.password = password;
         this.kontostand = kontostand;
         this.version = 0L;
     }
 
-    public String getNickname() {
+    public Long getNickname() {
         return nickname;
     }
 
-    public void setNickname(String nickname) {
+    public void setNickname(Long nickname) {
         this.nickname = nickname;
     }
 
@@ -73,12 +78,12 @@ public class Mitglied {
         this.email = email;
     }
 
-    public String getPostAdresse() {
-        return postAdresse;
+    public Adresse getAdresse() {
+        return adresse;
     }
 
-    public void setPostAdresse(String postAdresse) {
-        this.postAdresse = postAdresse;
+    public void setPostAdresse(Adresse adresse) {
+        this.adresse = adresse;
     }
 
     public String getFoto() {

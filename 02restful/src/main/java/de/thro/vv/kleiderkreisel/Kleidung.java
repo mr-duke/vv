@@ -1,9 +1,6 @@
 package de.thro.vv.kleiderkreisel;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Version;
+import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
@@ -28,6 +25,9 @@ public class Kleidung {
     private String foto;
     @Version
     private Long version;
+
+    @ManyToOne
+    private Mitglied besitzer;
 
     public enum Kleidergroesse {S, M, L, XL};
     // m = männlich, w = weiblich

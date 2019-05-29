@@ -4,11 +4,12 @@ import javax.persistence.*;
 import java.time.LocalDate;
 
 @Entity
-public class Tauschvorgang {
+public class Tausch {
 
     @Id
     @GeneratedValue
     private Long id;
+    @Convert(converter = DatumsConverter.class)
     private LocalDate tauschdatum;
     @OneToOne
     private Mitglied verkaeufer;
@@ -17,9 +18,9 @@ public class Tauschvorgang {
     @Version
     private Long version;
 
-    public Tauschvorgang() { }
+    public Tausch() { }
 
-    public Tauschvorgang(LocalDate tauschdatum, Mitglied verkaeufer, Mitglied kaeufer) {
+    public Tausch(LocalDate tauschdatum, Mitglied verkaeufer, Mitglied kaeufer) {
         this.tauschdatum = tauschdatum;
         this.verkaeufer = verkaeufer;
         this.kaeufer = kaeufer;
