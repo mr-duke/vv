@@ -1,5 +1,7 @@
 package de.thro.vv.kleiderkreisel;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.List;
 import java.util.Objects;
@@ -8,7 +10,7 @@ import java.util.Objects;
 public class Mitglied {
 
     @Id
-    private Long nickname;
+    private Long nummer;
     private String nachname;
     private String vorname;
     private String email;
@@ -19,24 +21,33 @@ public class Mitglied {
     private String foto;
     // kommt noch
     private String password;
-    // Kontostand in Eurocent als long
-    private double kontostand;
+    // Kontostand in EuroCent
+    private long kontostand;
     @Version
     private Long version;
 
     @OneToMany(mappedBy = "besitzer")
-    List<Kleidung> vorrat;
+    List<Kleidung> kleider;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "kaeufer")
+    private List<Tausch> kaeufe;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "verkaeufer")
+    private List<Tausch> verkaeufe;
+
 
     public Mitglied() {
     }
 
     // Falls Foto nicht angegeben
-    public Mitglied(Long nickname, String nachname, String vorname, String email, Adresse adresse, String password, double kontostand) {
-        this (nickname, nachname, vorname, email, adresse, null, password, kontostand);
+    public Mitglied(Long nummer, String nachname, String vorname, String email, Adresse adresse, String password, long kontostand) {
+        this (nummer, nachname, vorname, email, adresse, null, password, kontostand);
     }
 
-    public Mitglied(Long nickname, String nachname, String vorname, String email, Adresse adresse, String foto, String password, double kontostand) {
-        this.nickname = nickname;
+    public Mitglied(Long nummer, String nachname, String vorname, String email, Adresse adresse, String foto, String password, long kontostand) {
+        this.nummer = nummer;
         this.nachname = nachname;
         this.vorname = vorname;
         this.email = email;
@@ -47,12 +58,12 @@ public class Mitglied {
         this.version = 0L;
     }
 
-    public Long getNickname() {
-        return nickname;
+    public Long getNummer() {
+        return nummer;
     }
 
-    public void setNickname(Long nickname) {
-        this.nickname = nickname;
+    public void setNummer(Long nummer) {
+        this.nummer = nummer;
     }
 
     public String getNachname() {
@@ -103,11 +114,11 @@ public class Mitglied {
         this.password = password;
     }
 
-    public double getKontostand() {
+    public long getKontostand() {
         return kontostand;
     }
 
-    public void setKontostand(double kontostand) {
+    public void setKontostand(long kontostand) {
         this.kontostand = kontostand;
     }
 
@@ -124,18 +135,18 @@ public class Mitglied {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Mitglied mitglied = (Mitglied) o;
-        return nickname.equals(mitglied.nickname);
+        return nummer.equals(mitglied.nummer);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(nickname);
+        return Objects.hash(nummer);
     }
 
     @Override
     public String toString() {
         return "Mitglied{" +
-                "nickname='" + nickname + '\'' +
+                "nummer='" + nummer + '\'' +
                 ", nachname='" + nachname + '\'' +
                 ", vorname='" + vorname + '\'' +
                 '}';

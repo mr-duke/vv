@@ -8,9 +8,7 @@ public class Adresse {
     private String plz;
     private String stadt;
 
-    public Adresse(String strasse) {
-        this.strasse = strasse;
-    }
+    public Adresse() {}
 
     public Adresse(String strasse, String plz, String stadt) {
         this.strasse = strasse;
@@ -40,5 +38,14 @@ public class Adresse {
 
     public void setStadt(String stadt) {
         this.stadt = stadt;
+    }
+
+    @Override
+    public String toString() {
+        return "Adresse{" +
+                "strasse='" + strasse + '\'' +
+                ", plz='" + plz + '\'' +
+                ", stadt='" + stadt + '\'' +
+                '}';
     }
 }

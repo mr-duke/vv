@@ -2,6 +2,7 @@ package de.thro.vv.kleiderkreisel;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.Objects;
 
 @Entity
 public class Tausch {
@@ -9,21 +10,19 @@ public class Tausch {
     @Id
     @GeneratedValue
     private Long id;
-    @Convert(converter = DatumsConverter.class)
+    // @Convert(converter = DatumsConverter.class)
     private LocalDate tauschdatum;
-    @OneToOne
+    @ManyToOne
     private Mitglied verkaeufer;
-    @OneToOne
+    @ManyToOne
     private Mitglied kaeufer;
     @Version
     private Long version;
 
     public Tausch() { }
 
-    public Tausch(LocalDate tauschdatum, Mitglied verkaeufer, Mitglied kaeufer) {
+    public Tausch(LocalDate tauschdatum) {
         this.tauschdatum = tauschdatum;
-        this.verkaeufer = verkaeufer;
-        this.kaeufer = kaeufer;
         this.version = 0L;
     }
 
@@ -65,5 +64,18 @@ public class Tausch {
 
     public void setVersion(Long version) {
         this.version = version;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Tausch tausch = (Tausch) o;
+        return id.equals(tausch.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

@@ -1,5 +1,7 @@
 package de.thro.vv.kleiderkreisel;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.Objects;
 
@@ -14,37 +16,38 @@ public class Kleidung {
     @Id
     @GeneratedValue
     private Long id;
-    // Neupreis in Euro
-    private double neupreis;
-    // Tauschwert in Euro
-    private double tauschwert;
+    // Neupreis in EuroCent
+    private long neupreis;
+    // Tauschwert in EuroCent
+    private long tauschwert;
     private Kleidergroesse groesse;
     private Geschlecht geschlecht;
     private Typ typ;
     private String hersteller;
-    // noch nicht
+    // optional
     private String foto;
+
     @Version
     private Long version;
 
+    @JsonIgnore
     @ManyToOne
     private Mitglied besitzer;
 
     public enum Kleidergroesse {S, M, L, XL};
     // m = männlich, w = weiblich
-    public enum Geschlecht {m, w};
-    public enum Typ {Hose, Kleid, Hemd, Bluse, Shirt, Pullover, Anzug}
+    public enum Geschlecht {M, W};
+    public enum Typ {HOSE, KLEID, HEMD, BLUSE, SHIRT, PULLOVER, ANZUG}
 
     public Kleidung() {
     }
 
     // Falls Foto nicht angegeben
-    // neupreis in eurocent als long
-    public Kleidung(double neupreis, double tauschwert, Kleidergroesse groesse, Geschlecht geschlecht, Typ typ, String hersteller) {
+    public Kleidung(long neupreis, long tauschwert, Kleidergroesse groesse, Geschlecht geschlecht, Typ typ, String hersteller) {
         this (neupreis, tauschwert, groesse, geschlecht, typ, hersteller, null);
     }
 
-    public Kleidung(double neupreis, double tauschwert, Kleidergroesse groesse, Geschlecht geschlecht, Typ typ, String hersteller, String foto) {
+    public Kleidung(long neupreis, long tauschwert, Kleidergroesse groesse, Geschlecht geschlecht, Typ typ, String hersteller, String foto) {
         this.neupreis = neupreis;
         // Tauschwert muss zwischen 10 und 50 % vom Neupreis liegen
         if (tauschwert >= neupreis*PREISGRENZE_MIN && tauschwert <= neupreis*PREISGRENZE_MAX ) {
@@ -67,19 +70,19 @@ public class Kleidung {
         this.id = id;
     }
 
-    public double getNeupreis() {
+    public long getNeupreis() {
         return neupreis;
     }
 
-    public void setNeupreis(double neupreis) {
+    public void setNeupreis(long neupreis) {
         this.neupreis = neupreis;
     }
 
-    public double getTauschwert() {
+    public long getTauschwert() {
         return tauschwert;
     }
 
-    public void setTauschwert(double tauschwert) {
+    public void setTauschwert(long tauschwert) {
         if (tauschwert >= neupreis*PREISGRENZE_MIN && tauschwert <= neupreis*PREISGRENZE_MAX ) {
             this.tauschwert = tauschwert;
         } else
@@ -145,5 +148,17 @@ public class Kleidung {
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    @Override
+    public String toString() {
+        return "Kleidung{" +
+                "id=" + id +
+                ", neupreis=" + neupreis +
+                ", tauschwert=" + tauschwert +
+                ", groesse=" + groesse +
+                ", geschlecht=" + geschlecht +
+                ", besitzer=" + besitzer +
+                '}';
     }
 }
