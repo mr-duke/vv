@@ -10,6 +10,7 @@ import java.util.Objects;
 public class Mitglied {
 
     @Id
+    @GeneratedValue
     private Long nummer;
     private String nachname;
     private String vorname;
@@ -42,12 +43,11 @@ public class Mitglied {
     }
 
     // Falls Foto nicht angegeben
-    public Mitglied(Long nummer, String nachname, String vorname, String email, Adresse adresse, String password, long kontostand) {
-        this (nummer, nachname, vorname, email, adresse, null, password, kontostand);
+    public Mitglied( String nachname, String vorname, String email, Adresse adresse, String password, long kontostand) {
+        this (nachname, vorname, email, adresse, null, password, kontostand);
     }
 
-    public Mitglied(Long nummer, String nachname, String vorname, String email, Adresse adresse, String foto, String password, long kontostand) {
-        this.nummer = nummer;
+    public Mitglied(String nachname, String vorname, String email, Adresse adresse, String foto, String password, long kontostand) {
         this.nachname = nachname;
         this.vorname = vorname;
         this.email = email;
