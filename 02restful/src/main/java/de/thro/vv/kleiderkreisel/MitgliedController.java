@@ -108,7 +108,7 @@ public class MitgliedController {
             consumes = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<?> modifyMitglied(@PathVariable("id") String id,
-                                            @RequestBody Mitglied mitgliedUpdate{
+                                            @RequestBody Mitglied mitgliedUpdate){
         Mitglied existingMitglied = mrepo.findById(Long.parseLong(id))
                 .orElse(null);
         if (existingMitglied == null){
@@ -130,7 +130,7 @@ public class MitgliedController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    
+
     @ApiOperation(
             value = "Lösche ein Mitglied",
             response = Mitglied.class)
