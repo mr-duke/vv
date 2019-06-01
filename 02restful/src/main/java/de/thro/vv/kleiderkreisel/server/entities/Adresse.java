@@ -1,4 +1,4 @@
-package de.thro.vv.kleiderkreisel;
+package de.thro.vv.kleiderkreisel.server.entities;
 
 import javax.persistence.Embeddable;
 

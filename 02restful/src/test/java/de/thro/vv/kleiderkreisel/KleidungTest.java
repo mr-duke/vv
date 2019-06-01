@@ -1,5 +1,6 @@
 package de.thro.vv.kleiderkreisel;
 
+import de.thro.vv.kleiderkreisel.server.entities.Kleidung;
 import org.junit.Test;
 
 public class KleidungTest {

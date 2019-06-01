@@ -1,5 +1,7 @@
-package de.thro.vv.kleiderkreisel;
+package de.thro.vv.kleiderkreisel.server.controller;
 
+import de.thro.vv.kleiderkreisel.server.repositories.KleidungRepository;
+import de.thro.vv.kleiderkreisel.server.entities.Kleidung;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
