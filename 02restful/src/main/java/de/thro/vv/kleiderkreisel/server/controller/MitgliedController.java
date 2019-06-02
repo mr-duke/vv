@@ -130,10 +130,13 @@ public class MitgliedController {
         existingMitglied.setNachname(mitgliedUpdate.getNachname());
         existingMitglied.setVorname(mitgliedUpdate.getVorname());
         existingMitglied.setEmail(mitgliedUpdate.getEmail());
-        existingMitglied.setPostAdresse(mitgliedUpdate.getAdresse());
+        existingMitglied.setAdresse(mitgliedUpdate.getAdresse());
         existingMitglied.setKontostand(mitgliedUpdate.getKontostand());
         existingMitglied.setPassword(mitgliedUpdate.getPassword());
         existingMitglied.setFoto(mitgliedUpdate.getFoto());
+        existingMitglied.setKleider(mitgliedUpdate.getKleider());
+        existingMitglied.setKaeufe(mitgliedUpdate.getKaeufe());
+        existingMitglied.setVerkaeufe(mitgliedUpdate.getVerkaeufe());
 
         mrepo.save(existingMitglied);
         return new ResponseEntity<>(HttpStatus.OK);

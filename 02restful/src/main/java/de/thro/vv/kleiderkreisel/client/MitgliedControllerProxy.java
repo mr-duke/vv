@@ -43,8 +43,7 @@ public class MitgliedControllerProxy {
         }
     }
 
-    public Mitglied createNewMitglied (String nachname, String vorname, String email, Adresse adresse, String foto, String password, long kontostand) {
-        Mitglied mitgliedNew = new Mitglied(nachname, vorname, email, adresse, foto, password, kontostand);
+    public Mitglied createNewMitglied (Mitglied mitgliedNew){
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));

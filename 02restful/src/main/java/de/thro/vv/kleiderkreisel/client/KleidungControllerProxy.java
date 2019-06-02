@@ -44,8 +44,7 @@ public class KleidungControllerProxy {
         }
     }
 
-    public Kleidung createNewKleidung (long neupreis, long tauschwert, Kleidung.Kleidergroesse groesse, Kleidung.Geschlecht geschlecht, Kleidung.Typ typ, String hersteller, String foto) {
-        Kleidung kleidungNew = new Kleidung(neupreis, tauschwert, groesse, geschlecht, typ, hersteller, foto);
+    public Kleidung createNewKleidung (Kleidung kleidungNew){;
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));

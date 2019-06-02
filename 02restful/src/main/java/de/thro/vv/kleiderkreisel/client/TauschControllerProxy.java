@@ -44,8 +44,7 @@ public class TauschControllerProxy {
         }
     }
 
-    public Tausch createNewTausch (LocalDateTime localDateTime) {
-        Tausch tauschNew = new Tausch(localDateTime);
+    public Tausch createNewTausch (Tausch tauschNew){
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
