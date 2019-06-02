@@ -99,7 +99,11 @@ public class MitgliedController {
             value = "Ändere Mitglied",
             response = Mitglied.class)
     @ApiResponses(
-            @ApiResponse(code = 200, message = "Mitglied geändert"))
+            value = {
+                    @ApiResponse(code = 200, message = "Mitglied geändert"),
+                    @ApiResponse(code = 404, message = "Mitglied nicht gefunden"),
+                    @ApiResponse(code = 409, message = "Konflikt")
+            })
     @RequestMapping(
             value = "mitglieder/{id}",
             method = {RequestMethod.PUT, RequestMethod.PATCH},
@@ -134,7 +138,12 @@ public class MitgliedController {
             value = "Lösche ein Mitglied",
             response = Mitglied.class)
     @ApiResponses(
-            @ApiResponse(code = 202, message = "Mitglied gelöscht"))
+            value = {
+                    @ApiResponse(code = 202, message = "Mitglied gelöscht"),
+                    @ApiResponse(code = 404, message = "Mitglied nicht gefunden"),
+                    @ApiResponse(code = 409, message = "Konflikt"),
+                    @ApiResponse(code = 400, message = "Fehlerhafte Anfrage")
+            })
     @RequestMapping(
             value = "mitglieder/{id}",
             method = RequestMethod.DELETE,
