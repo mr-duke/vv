@@ -45,11 +45,16 @@ public class MitgliedControllerProxy {
 
     public Mitglied createNewMitglied (String nachname, String vorname, String email, Adresse adresse, String foto, String password, long kontostand) {
         Mitglied mitgliedNew = new Mitglied(nachname, vorname, email, adresse, foto, password, kontostand);
-
         RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+
+        HttpEntity<Mitglied> entity = new HttpEntity<>(mitgliedNew, httpHeaders);
+        // Neues Mitglied erhält Server-generierte ID, daher zuerst passende URI ausgeben lassen
         URI uri = restTemplate.postForLocation(
                 BASE_URI + VERSION + "mitglieder/",
-                mitgliedNew, Mitglied.class);
+                entity, Mitglied.class);
 
         ResponseEntity<Mitglied> response = restTemplate.getForEntity(uri, Mitglied.class);
         if (response.getStatusCode().equals(HttpStatus.CREATED)){

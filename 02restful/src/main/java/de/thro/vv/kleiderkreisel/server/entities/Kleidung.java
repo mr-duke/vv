@@ -26,7 +26,7 @@ public class Kleidung {
     private String hersteller;
     // optional
     private String foto;
-
+    // Optimistische Strategie über Versionszähler zur Vermeidung des Lost-Update-Problems
     @Version
     private Long version;
 

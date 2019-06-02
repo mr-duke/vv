@@ -16,6 +16,7 @@ public class Tausch {
     private Mitglied verkaeufer;
     @ManyToOne
     private Mitglied kaeufer;
+    // Optimistische Strategie über Versionszähler zur Vermeidung des Lost-Update-Problems
     @Version
     private Long version;
 

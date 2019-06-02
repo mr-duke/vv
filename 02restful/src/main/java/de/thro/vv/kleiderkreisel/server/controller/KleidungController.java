@@ -99,7 +99,11 @@ public class KleidungController {
             value = "Ändere Kleidungsstück",
             response = Kleidung.class)
     @ApiResponses(
-            @ApiResponse(code = 200, message = "Kleidungsstück geändert"))
+            value = {
+                    @ApiResponse(code = 200, message = "Kleidungsstück geändert"),
+                    @ApiResponse(code = 404, message = "Kleidungsstück nicht gefunden"),
+                    @ApiResponse(code = 409, message = "Konflikt")
+            })
     @RequestMapping(
             value = "kleider/{id}",
             method = {RequestMethod.PUT, RequestMethod.PATCH},
@@ -134,7 +138,12 @@ public class KleidungController {
             value = "Lösche ein Kleidungsstück",
             response = Kleidung.class)
     @ApiResponses(
-            @ApiResponse(code = 202, message = "Kleidung gelöscht"))
+            value = {
+                    @ApiResponse(code = 202, message = "Kleidungsstück gelöscht"),
+                    @ApiResponse(code = 404, message = "Kleidungsstück nicht gefunden"),
+                    @ApiResponse(code = 409, message = "Konflikt"),
+                    @ApiResponse(code = 400, message = "Fehlerhafte Anfrage")
+            })
     @RequestMapping(
             value = "kleider/{id}",
             method = RequestMethod.DELETE,

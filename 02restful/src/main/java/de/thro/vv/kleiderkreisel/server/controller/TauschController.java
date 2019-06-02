@@ -99,7 +99,11 @@ public class TauschController {
             value = "Ändere Tauschvorgang",
             response = Tausch.class)
     @ApiResponses(
-            @ApiResponse(code = 200, message = "Tauschvorgang geändert"))
+            value = {
+                    @ApiResponse(code = 200, message = "Tauschvorgang geändert"),
+                    @ApiResponse(code = 404, message = "Tauschvorgang nicht gefunden"),
+                    @ApiResponse(code = 409, message = "Konflikt")
+            })
     @RequestMapping(
             value = "tausch/{id}",
             method = {RequestMethod.PUT, RequestMethod.PATCH},
@@ -128,7 +132,12 @@ public class TauschController {
             value = "Lösche einen Tauschvorgang",
             response = Tausch.class)
     @ApiResponses(
-            @ApiResponse(code = 202, message = "Tauschvorgang gelöscht"))
+            value = {
+                    @ApiResponse(code = 202, message = "Tauschvorgang gelöscht"),
+                    @ApiResponse(code = 404, message = "Tauschvorgang nicht gefunden"),
+                    @ApiResponse(code = 409, message = "Konflikt"),
+                    @ApiResponse(code = 400, message = "Fehlerhafte Anfrage")
+            })
     @RequestMapping(
             value = "tausch/{id}",
             method = RequestMethod.DELETE,

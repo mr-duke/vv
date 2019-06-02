@@ -15,15 +15,14 @@ public class Mitglied {
     private String nachname;
     private String vorname;
     private String email;
-
     @Embedded
     private Adresse adresse;
-
     private String foto;
     // kommt noch
     private String password;
     // Kontostand in EuroCent
     private long kontostand;
+    // Optimistische Strategie über Versionszähler zur Vermeidung des Lost-Update-Problems
     @Version
     private Long version;
 
