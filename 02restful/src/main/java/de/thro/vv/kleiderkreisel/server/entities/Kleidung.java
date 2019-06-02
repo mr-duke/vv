@@ -137,6 +137,14 @@ public class Kleidung {
         this.version = version;
     }
 
+    public Mitglied getBesitzer() {
+        return besitzer;
+    }
+
+    public void setBesitzer(Mitglied besitzer) {
+        this.besitzer = besitzer;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

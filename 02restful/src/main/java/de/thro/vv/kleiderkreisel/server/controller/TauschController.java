@@ -57,8 +57,9 @@ public class TauschController {
             value = "Finde alle Tauschvorgänge",
             response = List.class)
     @ApiResponses(
-            @ApiResponse(code = 200, message = "Alle Tauschvorgänge aufgelistet")
-    )
+            value = {
+                    @ApiResponse(code = 200, message = "Alle Tauschvorgänge aufgelistet"),
+                    @ApiResponse(code = 404, message = "Keine Tauschvorgänge gefunden")})
     @RequestMapping(
             value = "tausch",
             method = RequestMethod.GET,
@@ -68,7 +69,12 @@ public class TauschController {
         List<Tausch> tauschvorgaengeList = new LinkedList<>();
         tauschIterable.forEach(tausch -> tauschvorgaengeList.add(tausch));
 
-        return new ResponseEntity<>(tauschvorgaengeList, HttpStatus.OK);
+        if (tauschvorgaengeList.size() == 0){
+            // Falls Liste leer, leere Liste zurürckgeben
+            return new ResponseEntity<>(tauschvorgaengeList, HttpStatus.NOT_FOUND);
+        } else {
+            return new ResponseEntity<>(tauschvorgaengeList, HttpStatus.OK);
+        }
     }
 
 

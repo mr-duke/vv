@@ -57,8 +57,9 @@ public class KleidungController {
             value = "Finde alle Kleidungsstücke",
             response = List.class)
     @ApiResponses(
-            @ApiResponse(code = 200, message = "Alle Kleidungsstücke aufgelistet")
-    )
+            value = {
+                    @ApiResponse(code = 200, message = "Alle Kleidungsstücke aufgelistet"),
+                    @ApiResponse(code = 404, message = "Keine Kleidungsstücke gefunden")})
     @RequestMapping(
             value = "kleider",
             method = RequestMethod.GET,
@@ -68,7 +69,12 @@ public class KleidungController {
         List<Kleidung> kleiderList = new LinkedList<>();
         kleidungIterable.forEach(kleidung -> kleiderList.add(kleidung));
 
-        return new ResponseEntity<>(kleiderList, HttpStatus.OK);
+        if (kleiderList.size() == 0){
+            // Falls Liste leer, leere Liste zurürckgeben
+            return new ResponseEntity<>(kleiderList, HttpStatus.NOT_FOUND);
+        } else {
+            return new ResponseEntity<>(kleiderList, HttpStatus.OK);
+        }
     }
 
 

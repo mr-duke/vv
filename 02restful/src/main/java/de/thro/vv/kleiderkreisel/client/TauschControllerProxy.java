@@ -2,38 +2,39 @@ package de.thro.vv.kleiderkreisel.client;
 
 import de.thro.vv.kleiderkreisel.server.entities.Adresse;
 import de.thro.vv.kleiderkreisel.server.entities.Mitglied;
+import de.thro.vv.kleiderkreisel.server.entities.Tausch;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
 
 import java.net.URI;
+import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 
-public class MitgliedControllerProxy {
+public class TauschControllerProxy {
 
     private final String BASE_URI = "http://localhost:8080/";
     private final String VERSION = "api/v1/";
 
-    public Mitglied findMitgliedById (Long id) {
+    public Tausch findTauschById (Long id) {
         RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<Mitglied> response = restTemplate.getForEntity(
-                BASE_URI + VERSION + "mitglieder/" + id, Mitglied.class);
+        ResponseEntity<Tausch> response = restTemplate.getForEntity(
+                BASE_URI + VERSION + "tausch/" + id, Tausch.class);
         if (response.getStatusCode().equals(HttpStatus.OK)){
             return response.getBody();
         } else if (response.getStatusCode().equals(HttpStatus.NOT_FOUND)){
-            System.err.println("Mitglied nicht gefunden");
+            System.err.println("Tauschvorgang nicht gefunden");
         }
         // Im Fehlerfall immer null zurückgeben
         return null;
     }
 
-    public List<Mitglied> findAllMitglieder() {
+    public List<Tausch> findAllTauschvorgaenge() {
         RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<List<Mitglied>> response = restTemplate.exchange(
-                BASE_URI + VERSION + "mitglieder/", HttpMethod.GET, null,
-                new ParameterizedTypeReference<List<Mitglied>>() {} );
+        ResponseEntity<List<Tausch>> response = restTemplate.exchange(
+                BASE_URI + VERSION + "tausch/", HttpMethod.GET, null,
+                new ParameterizedTypeReference<List<Tausch>>() {} );
 
         if (response.getStatusCode().equals(HttpStatus.OK) || response.getStatusCode().equals(HttpStatus.NOT_FOUND)){
             return response.getBody();
@@ -43,66 +44,66 @@ public class MitgliedControllerProxy {
         }
     }
 
-    public Mitglied createNewMitglied (String nachname, String vorname, String email, Adresse adresse, String foto, String password, long kontostand) {
-        Mitglied mitgliedNew = new Mitglied(nachname, vorname, email, adresse, foto, password, kontostand);
+    public Tausch createNewTausch (LocalDateTime localDateTime) {
+        Tausch tauschNew = new Tausch(localDateTime);
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
 
-        HttpEntity<Mitglied> entity = new HttpEntity<>(mitgliedNew, httpHeaders);
-        // Neues Mitglied erhält Server-generierte ID, daher zuerst passende URI ausgeben lassen
+        HttpEntity<Tausch> entity = new HttpEntity<>(tauschNew, httpHeaders);
+        // Neuer Tauschvorgang erhält Server-generierte ID, daher zuerst passende URI ausgeben lassen
         URI uri = restTemplate.postForLocation(
-                BASE_URI + VERSION + "mitglieder/",
-                entity, Mitglied.class);
+                BASE_URI + VERSION + "tausch/",
+                entity, Tausch.class);
 
-        ResponseEntity<Mitglied> response = restTemplate.getForEntity(uri, Mitglied.class);
+        ResponseEntity<Tausch> response = restTemplate.getForEntity(uri, Tausch.class);
         if (response.getStatusCode().equals(HttpStatus.CREATED)){
             return response.getBody();
         } else {
-            System.err.println("Fehler beim Anlegen eines neuen Mitglieds");
+            System.err.println("Fehler beim Anlegen eines neuen Tauschvorgangs");
             // Im Fehlerfall immer null zurückgeben
             return null;
         }
     }
 
-    public Mitglied updateMitglied (Mitglied mitglied) {
+    public Tausch updateTausch (Tausch tausch) {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
 
-        HttpEntity<Mitglied> entity = new HttpEntity<>(mitglied, httpHeaders);
-        ResponseEntity<Mitglied> response = restTemplate.exchange(
-                BASE_URI + VERSION + "mitglieder/" + mitglied.getNummer(),
-                HttpMethod.PUT, entity, Mitglied.class);
+        HttpEntity<Tausch> entity = new HttpEntity<>(tausch, httpHeaders);
+        ResponseEntity<Tausch> response = restTemplate.exchange(
+                BASE_URI + VERSION + "tausch/" + tausch.getId(),
+                HttpMethod.PUT, entity, Tausch.class);
         if (response.getStatusCode().equals(HttpStatus.OK)){
             return response.getBody();
         } else if (response.getStatusCode().equals(HttpStatus.CONFLICT)){
             System.err.println("Konflikt beim Update aufgetreten");
         } else if (response.getStatusCode().equals(HttpStatus.NOT_FOUND)){
-            System.err.println("Mitglied nicht gefunden");
+            System.err.println("Tauchvorgang nicht gefunden");
         }
         // Im Fehlerfall immer null zurückgeben
         return null;
     }
 
-    public void deleteMitglied (Mitglied mitglied) {
+    public void deleteTausch (Tausch tausch) {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
 
-        HttpEntity<Mitglied> entity = new HttpEntity<>(mitglied, httpHeaders);
+        HttpEntity<Tausch> entity = new HttpEntity<>(tausch, httpHeaders);
         ResponseEntity<Void> response = restTemplate.exchange(
-                BASE_URI + VERSION + "mitglieder/" + mitglied.getNummer(),
+                BASE_URI + VERSION + "tausch/" + tausch.getId(),
                 HttpMethod.DELETE, entity, Void.class);
 
-        // Mitglied erfolgreich gelöscht
+        // Tauschvorgang erfolgreich gelöscht
         if (response.getStatusCode().equals(HttpStatus.NO_CONTENT)){
             return;
         } else if (response.getStatusCode().equals(HttpStatus.NOT_FOUND)){
-            System.err.println("Mitglied nicht gefunden");
+            System.err.println("Tauschvorgang nicht gefunden");
         } else if (response.getStatusCode().equals(HttpStatus.BAD_REQUEST)){
             System.err.println("Fehlerhafte Anfrage");
         } else if (response.getStatusCode().equals(HttpStatus.CONFLICT)){

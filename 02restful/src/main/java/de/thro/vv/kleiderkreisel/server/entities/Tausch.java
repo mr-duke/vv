@@ -2,6 +2,7 @@ package de.thro.vv.kleiderkreisel.server.entities;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
@@ -11,7 +12,7 @@ public class Tausch {
     @GeneratedValue
     private Long id;
     // @Convert(converter = DatumsConverter.class)
-    private LocalDate tauschdatum;
+    private LocalDateTime tauschdatum;
     @ManyToOne
     private Mitglied verkaeufer;
     @ManyToOne
@@ -22,7 +23,7 @@ public class Tausch {
 
     public Tausch() { }
 
-    public Tausch(LocalDate tauschdatum) {
+    public Tausch(LocalDateTime tauschdatum) {
         this.tauschdatum = tauschdatum;
         this.version = 0L;
     }
@@ -35,11 +36,11 @@ public class Tausch {
         this.id = id;
     }
 
-    public LocalDate getTauschdatum() {
+    public LocalDateTime getTauschdatum() {
         return tauschdatum;
     }
 
-    public void setTauschdatum(LocalDate tauschdatum) {
+    public void setTauschdatum(LocalDateTime tauschdatum) {
         this.tauschdatum = tauschdatum;
     }
 

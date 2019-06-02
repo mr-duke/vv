@@ -3,6 +3,7 @@ package de.thro.vv.kleiderkreisel.server.entities;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
@@ -55,6 +56,9 @@ public class Mitglied {
         this.password = password;
         this.kontostand = kontostand;
         this.version = 0L;
+        this.kleider = new LinkedList<>();
+        this.kaeufe = new LinkedList<>();
+        this.verkaeufe = new LinkedList<>();
     }
 
     public Long getNummer() {
@@ -93,7 +97,7 @@ public class Mitglied {
         return adresse;
     }
 
-    public void setPostAdresse(Adresse adresse) {
+    public void setAdresse(Adresse adresse) {
         this.adresse = adresse;
     }
 
@@ -127,6 +131,39 @@ public class Mitglied {
 
     public void setVersion(Long version) {
         this.version = version;
+    }
+
+    public List<Kleidung> getKleider() {
+        return kleider;
+    }
+
+    public void setKleider(List<Kleidung> kleider) {
+        this.kleider = kleider;
+        for (Kleidung kl : kleider){
+            kl.setBesitzer(this);
+        }
+    }
+
+    public List<Tausch> getKaeufe() {
+        return kaeufe;
+    }
+
+    public void setKaeufe(List<Tausch> kaeufe) {
+        this.kaeufe = kaeufe;
+        for (Tausch t : kaeufe){
+            t.setKaeufer(this);
+        }
+    }
+
+    public List<Tausch> getVerkaeufe() {
+        return verkaeufe;
+    }
+
+    public void setVerkaeufe(List<Tausch> verkaeufe) {
+        this.verkaeufe = verkaeufe;
+        for (Tausch t : verkaeufe){
+            t.setVerkaeufer(this);
+        }
     }
 
     @Override

@@ -57,8 +57,9 @@ public class MitgliedController {
             value = "Finde alle Mitglieder",
             response = List.class)
     @ApiResponses(
-            @ApiResponse(code = 200, message = "Alle Mitglieder aufgelistet")
-    )
+            value = {
+                    @ApiResponse(code = 200, message = "Alle Mitglieder aufgelistet"),
+                    @ApiResponse(code = 404, message = "Keine Mitglieder gefunden")})
     @RequestMapping(
             value = "mitglieder",
             method = RequestMethod.GET,
@@ -68,7 +69,12 @@ public class MitgliedController {
         List<Mitglied> mitgliederList = new LinkedList<>();
         mitgliedIterable.forEach(mitglied -> mitgliederList.add(mitglied));
 
-        return new ResponseEntity<>(mitgliederList, HttpStatus.OK);
+        if (mitgliederList.size() == 0){
+            // Falls Liste leer, leere Liste zurürckgeben
+            return new ResponseEntity<>(mitgliederList, HttpStatus.NOT_FOUND);
+        } else {
+            return new ResponseEntity<>(mitgliederList, HttpStatus.OK);
+        }
     }
 
 
