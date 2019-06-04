@@ -145,7 +145,7 @@ public class KleidungController {
             response = Kleidung.class)
     @ApiResponses(
             value = {
-                    @ApiResponse(code = 202, message = "Kleidungsstück gelöscht"),
+                    @ApiResponse(code = 204, message = "Kleidungsstück gelöscht"),
                     @ApiResponse(code = 404, message = "Kleidungsstück nicht gefunden"),
                     @ApiResponse(code = 409, message = "Konflikt"),
                     @ApiResponse(code = 400, message = "Fehlerhafte Anfrage")

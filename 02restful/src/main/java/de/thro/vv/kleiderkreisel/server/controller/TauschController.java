@@ -139,7 +139,7 @@ public class TauschController {
             response = Tausch.class)
     @ApiResponses(
             value = {
-                    @ApiResponse(code = 202, message = "Tauschvorgang gelöscht"),
+                    @ApiResponse(code = 204, message = "Tauschvorgang gelöscht"),
                     @ApiResponse(code = 404, message = "Tauschvorgang nicht gefunden"),
                     @ApiResponse(code = 409, message = "Konflikt"),
                     @ApiResponse(code = 400, message = "Fehlerhafte Anfrage")

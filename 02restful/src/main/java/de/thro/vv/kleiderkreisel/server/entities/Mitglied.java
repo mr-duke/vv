@@ -30,11 +30,11 @@ public class Mitglied {
     @OneToMany(mappedBy = "besitzer")
     List<Kleidung> kleider;
 
-    @JsonIgnore
+    // @JsonIgnore
     @OneToMany(mappedBy = "kaeufer")
     private List<Tausch> kaeufe;
 
-    @JsonIgnore
+    // @JsonIgnore
     @OneToMany(mappedBy = "verkaeufer")
     private List<Tausch> verkaeufe;
 

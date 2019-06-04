@@ -139,6 +139,10 @@ public class MitgliedController {
         existingMitglied.setVerkaeufe(mitgliedUpdate.getVerkaeufe());
 
         mrepo.save(existingMitglied);
+
+        // Alternative ??
+        // 1. Alles auskommentieren
+        // 2. mrepo.save(mitgliedUpdate);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -148,7 +152,7 @@ public class MitgliedController {
             response = Mitglied.class)
     @ApiResponses(
             value = {
-                    @ApiResponse(code = 202, message = "Mitglied gelöscht"),
+                    @ApiResponse(code = 204, message = "Mitglied gelöscht"),
                     @ApiResponse(code = 404, message = "Mitglied nicht gefunden"),
                     @ApiResponse(code = 409, message = "Konflikt"),
                     @ApiResponse(code = 400, message = "Fehlerhafte Anfrage")
