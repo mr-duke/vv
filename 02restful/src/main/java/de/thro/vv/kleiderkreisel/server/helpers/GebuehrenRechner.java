@@ -1,13 +1,11 @@
 package de.thro.vv.kleiderkreisel.server.helpers;
 
-import de.thro.vv.kleiderkreisel.server.controller.MitgliedController;
-import de.thro.vv.kleiderkreisel.server.entities.Handelsplattform;
+import de.thro.vv.kleiderkreisel.server.entities.Konto;
 import de.thro.vv.kleiderkreisel.server.entities.Mitglied;
-import de.thro.vv.kleiderkreisel.server.repositories.HandelsplattformRepository;
+import de.thro.vv.kleiderkreisel.server.repositories.KontoRepository;
 import de.thro.vv.kleiderkreisel.server.repositories.MitgliedRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.awt.*;
 import java.time.LocalDateTime;
 
 public class GebuehrenRechner {
@@ -17,12 +15,12 @@ public class GebuehrenRechner {
     // Handelplattform könnte mehrere Konten besitzen; in diesem Beispiel wird der Einfachheit halber
     // nur über ein und dasselbe Konto abgerechnet
     private final long KONTO_ID = 1;
-    private HandelsplattformRepository hprepo;
+    private KontoRepository kontoRepo;
     private MitgliedRepository mrepo;
 
     @Autowired
-    public GebuehrenRechner(HandelsplattformRepository hprepo, MitgliedRepository mrepo) {
-        this.hprepo = hprepo;
+    public GebuehrenRechner(KontoRepository kontoRepo, MitgliedRepository mrepo) {
+        this.kontoRepo = kontoRepo;
         this.mrepo = mrepo;
     }
 
@@ -36,17 +34,17 @@ public class GebuehrenRechner {
         mrepo.save(verkaeufer);
         mrepo.save(kaeufer);
 
-        // Demo-Konto der Handelsplattform zurückgeben bzw falls null, neu anlegen
-        Handelsplattform hdp;
-        hdp = hprepo.findById(KONTO_ID).orElse(null);
+        // Demo-Konto der Konto zurückgeben bzw falls null, neu anlegen
+        Konto hdp;
+        hdp = kontoRepo.findById(KONTO_ID).orElse(null);
         if (hdp == null){
-            Handelsplattform neuesKonto = new Handelsplattform(1L, 0, LocalDateTime.now());
-            hdp = hprepo.save(neuesKonto);
+            Konto neuesKonto = new Konto(1L, 0, LocalDateTime.now());
+            hdp = kontoRepo.save(neuesKonto);
         }
         // Zweimal Tauschgebühr auf das Konto der Plattform gutschreiben
         long neuerKontostandHdp = hdp.getKontostand() + 2*TAUSCHGEBUEHR;
         hdp.setKontostand(neuerKontostandHdp);
         hdp.setZuletztGeaendert(LocalDateTime.now());
-        hprepo.save(hdp);
+        kontoRepo.save(hdp);
     }
 }

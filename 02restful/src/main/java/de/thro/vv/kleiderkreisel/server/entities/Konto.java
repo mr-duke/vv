@@ -4,8 +4,10 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.time.LocalDateTime;
 
+
+// Fiktives Konto der Handelsplattform zur Abrechnung der Tauschgebühren der Mitglieder
 @Entity
-public class Handelsplattform {
+public class Konto {
 
     // ID des Kontos
     // Handelplattform könnte mehrere Konten besitzen; in diesem Beispiel wird der Einfachheit halber
@@ -17,10 +19,10 @@ public class Handelsplattform {
     // Datum der letzten Kontobewegung
     private LocalDateTime zuletztGeaendert;
 
-    public Handelsplattform() {
+    public Konto() {
     }
 
-    public Handelsplattform(Long id, long kontostand, LocalDateTime zuletztGeaendert) {
+    public Konto(Long id, long kontostand, LocalDateTime zuletztGeaendert) {
         this.id = id;
         this.kontostand = kontostand;
         this.zuletztGeaendert = zuletztGeaendert;
