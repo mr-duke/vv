@@ -55,6 +55,7 @@ public class MitgliedControllerProxy {
         URI uri = restTemplate.postForLocation(
               BASE_URI + VERSION + "mitglieder/",
                 entity, Mitglied.class);
+        System.out.println(uri);
         ResponseEntity<Mitglied> response = restTemplate.getForEntity(uri, Mitglied.class);
 
         // Variante 2: Läuft zwar durch, aber gibt null zurück

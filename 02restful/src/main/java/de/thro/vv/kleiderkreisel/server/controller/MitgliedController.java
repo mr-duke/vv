@@ -92,7 +92,9 @@ public class MitgliedController {
     )
     public ResponseEntity<?> createNewMitglied (@RequestBody Mitglied mitglied,
                                                 UriComponentsBuilder uriComponentsBuilder) {
+        System.out.println(mitglied.getNummer());
         mrepo.save(mitglied);
+        System.out.println("neu " + mitglied.getNummer());
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setLocation(uriComponentsBuilder
                 .path("api/v1/mitglieder/{id}")

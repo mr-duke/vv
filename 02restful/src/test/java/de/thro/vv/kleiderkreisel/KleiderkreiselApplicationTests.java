@@ -26,7 +26,8 @@ public class KleiderkreiselApplicationTests {
 
         Mitglied m2 = new Mitglied("Allvater", "Odin", "odin@asgard.ag", a, "power", 10000);
 
-
+        m1.setNummer(10000L);
+        m2.setNummer(20000L);
         Mitglied thor = mproxy.createNewMitglied(m1);
         Mitglied odin = mproxy.createNewMitglied(m2);
 
