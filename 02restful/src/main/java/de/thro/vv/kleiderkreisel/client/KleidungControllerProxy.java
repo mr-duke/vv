@@ -51,12 +51,10 @@ public class KleidungControllerProxy {
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
 
         HttpEntity<Kleidung> entity = new HttpEntity<>(kleidungNew, httpHeaders);
-        // Neues Kleidungsstück erhält Server-generierte ID, daher zuerst passende URI ausgeben lassen
-        URI uri = restTemplate.postForLocation(
-                BASE_URI + VERSION + "kleider/",
-                entity, Kleidung.class);
+        ResponseEntity<Kleidung> response = restTemplate.exchange(
+                BASE_URI + VERSION + "kleider",
+                HttpMethod.POST, entity, Kleidung.class);
 
-        ResponseEntity<Kleidung> response = restTemplate.getForEntity(uri, Kleidung.class);
         if (response.getStatusCode().equals(HttpStatus.CREATED)){
             return response.getBody();
         } else {

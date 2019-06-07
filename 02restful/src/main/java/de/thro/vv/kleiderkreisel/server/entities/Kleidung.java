@@ -30,8 +30,9 @@ public class Kleidung {
     @Version
     private Long version;
 
-    @JsonIgnore
+    //@JsonIgnore
     @ManyToOne
+    @JoinColumn
     private Mitglied besitzer;
 
     public enum Kleidergroesse {S, M, L, XL};

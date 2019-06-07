@@ -92,12 +92,12 @@ public class KleidungController {
     )
     public ResponseEntity<?> createNewKleidung (@RequestBody Kleidung kleidung,
                                                 UriComponentsBuilder uriComponentsBuilder) {
-        krepo.save(kleidung);
+        Kleidung kleidungNew = krepo.save(kleidung);
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setLocation(uriComponentsBuilder
                 .path("api/v1/kleider/{id}")
-                .buildAndExpand(kleidung.getId()).toUri());
-        return new ResponseEntity<String>(httpHeaders, HttpStatus.CREATED);
+                .buildAndExpand(kleidungNew.getId()).toUri());
+        return new ResponseEntity<>(kleidungNew, httpHeaders, HttpStatus.CREATED);
     }
 
 
@@ -135,8 +135,9 @@ public class KleidungController {
         existingKleidung.setHersteller(kleidungUpdate.getHersteller());
         existingKleidung.setFoto(kleidungUpdate.getFoto());
 
-        krepo.save(existingKleidung);
-        return new ResponseEntity<>(HttpStatus.OK);
+        Kleidung updatedKleidung = krepo.save(existingKleidung);
+
+        return new ResponseEntity<Kleidung>(updatedKleidung, HttpStatus.OK);
     }
 
 
