@@ -50,18 +50,9 @@ public class MitgliedControllerProxy {
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
 
         HttpEntity<Mitglied> entity = new HttpEntity<>(mitgliedNew, httpHeaders);
-        // Variante 1: Test läuft nicht. ID (@GeneratedValue) bleibt null; getForEntity hat JSON Deserialization fehler
-        // Neues Mitglied erhält Server-generierte ID, daher zuerst passende URI ausgeben lassen
-        URI uri = restTemplate.postForLocation(
-              BASE_URI + VERSION + "mitglieder/",
-                entity, Mitglied.class);
-        System.out.println(uri);
-        ResponseEntity<Mitglied> response = restTemplate.getForEntity(uri, Mitglied.class);
-
-        // Variante 2: Läuft zwar durch, aber gibt null zurück
-        //ResponseEntity<Mitglied> response = restTemplate.exchange(
-        //        BASE_URI + VERSION + "mitglieder",
-        //        HttpMethod.POST, entity, Mitglied.class);
+        ResponseEntity<Mitglied> response = restTemplate.exchange(
+                BASE_URI + VERSION + "mitglieder",
+                HttpMethod.POST, entity, Mitglied.class);
 
         if (response.getStatusCode().equals(HttpStatus.CREATED)){
             return response.getBody();

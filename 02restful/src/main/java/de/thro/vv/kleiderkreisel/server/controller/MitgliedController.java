@@ -92,14 +92,13 @@ public class MitgliedController {
     )
     public ResponseEntity<?> createNewMitglied (@RequestBody Mitglied mitglied,
                                                 UriComponentsBuilder uriComponentsBuilder) {
-        System.out.println(mitglied.getNummer());
-        mrepo.save(mitglied);
-        System.out.println("neu " + mitglied.getNummer());
+        Mitglied mitgliedNew = mrepo.save(mitglied);
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setLocation(uriComponentsBuilder
                 .path("api/v1/mitglieder/{id}")
-                .buildAndExpand(mitglied.getNummer()).toUri());
-        return new ResponseEntity<String>(httpHeaders, HttpStatus.CREATED);
+                .buildAndExpand(mitgliedNew.getNummer()).toUri());
+
+        return new ResponseEntity<>(mitgliedNew, httpHeaders, HttpStatus.CREATED);
     }
 
 
@@ -140,12 +139,12 @@ public class MitgliedController {
         existingMitglied.setKaeufe(mitgliedUpdate.getKaeufe());
         existingMitglied.setVerkaeufe(mitgliedUpdate.getVerkaeufe());
 
-        mrepo.save(existingMitglied);
+        Mitglied updatedMitglied = mrepo.save(existingMitglied);
 
         // Alternative ??
         // 1. Alles auskommentieren
         // 2. mrepo.save(mitgliedUpdate);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(updatedMitglied, HttpStatus.OK);
     }
 
 

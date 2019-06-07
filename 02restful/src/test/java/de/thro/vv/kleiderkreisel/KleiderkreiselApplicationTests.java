@@ -7,6 +7,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.web.client.RestClientException;
+
+import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -16,22 +19,43 @@ public class KleiderkreiselApplicationTests {
     public void contextLoads() {
     }
 
-    @Test
-    public void tauschvorgangTest(){
+    @Test (expected = RestClientException.class)
+    public void mitgliedCrudTest(){
         MitgliedControllerProxy mproxy = new MitgliedControllerProxy();
 
-        // Create some sample users
+        // createNew Mitglied-Test
         Adresse a = new Adresse("Asgardstr.1", "999", "Asgard");
         Mitglied m1 = new Mitglied("Odinson", "Thor", "thor@asgard.ag", a, "hammer", 1000);
-
         Mitglied m2 = new Mitglied("Allvater", "Odin", "odin@asgard.ag", a, "power", 10000);
 
-        m1.setNummer(10000L);
-        m2.setNummer(20000L);
         Mitglied thor = mproxy.createNewMitglied(m1);
         Mitglied odin = mproxy.createNewMitglied(m2);
+        long thorId = thor.getNummer();
+        long odinId = odin.getNummer();
 
-       System.out.println(mproxy.findMitgliedById(1L).toString());
+        assertNotNull(mproxy.findMitgliedById(thorId));
+        assertNotNull(mproxy.findMitgliedById(odinId));
 
+        // findMitgliedByID-Test
+        assertEquals("Thor", mproxy.findMitgliedById(thorId).getVorname());
+
+        // findAllMitglieder-Test
+        // Liste aller Mitglieder besteht aus 2 Mitgliedern
+        assertEquals(2, mproxy.findAllMitglieder().size());
+
+        // updateMitglied-Test
+        assertEquals(1000, thor.getKontostand());
+        // Kontostand updaten
+        thor.setKontostand(2000);
+        Mitglied thorNew = mproxy.updateMitglied(thor);
+        assertEquals(2000, thorNew.getKontostand());
+
+        //deleteMitglied-Test
+        Mitglied thor2 = mproxy.findMitgliedById(thorId);
+        Mitglied odin2 = mproxy.findMitgliedById(odinId);
+        mproxy.deleteMitglied(thor2);
+        mproxy.deleteMitglied(odin2);
+        // Wirft RestClientException; getestet in Methodensignatur (expected = RestClientException.class)
+        mproxy.findAllMitglieder();
     }
 }
