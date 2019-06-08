@@ -39,7 +39,7 @@ public class KleiderkreiselApplicationTests {
         Kleidung k1 = new Kleidung(10000L, 5000L, Kleidung.Kleidergroesse.M, Kleidung.Geschlecht.M, Kleidung.Typ.ANZUG, "Boss" );
         Kleidung k2 = new Kleidung(1000L, 400L, Kleidung.Kleidergroesse.S, Kleidung.Geschlecht.M, Kleidung.Typ.PULLOVER, "Northwind" );
         Kleidung k3 = new Kleidung(5000L, 2000L, Kleidung.Kleidergroesse.L, Kleidung.Geschlecht.M, Kleidung.Typ.SHIRT, "McNeil" );
-        Kleidung k4 = new Kleidung(8000L, 4000L, Kleidung.Kleidergroesse.L, Kleidung.Geschlecht.M, Kleidung.Typ.HEMD, "Gentleman" );
+        Kleidung k4 = new Kleidung(8000L, 4000L, Kleidung.Kleidergroesse.L, Kleidung.Geschlecht.M, Kleidung.Typ.HEMD, "SmartGentleman" );
 
         Tausch t1 = new Tausch(LocalDateTime.now());
 

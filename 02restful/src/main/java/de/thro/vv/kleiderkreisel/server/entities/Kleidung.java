@@ -1,5 +1,6 @@
 package de.thro.vv.kleiderkreisel.server.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
@@ -32,8 +33,8 @@ public class Kleidung {
     @Version
     private Long version;
 
-    @JsonIgnore
     @ManyToOne (fetch = FetchType.LAZY)
+    @JsonBackReference
     @JoinColumn (name = "besitzer_id")
     private Mitglied besitzer;
 
