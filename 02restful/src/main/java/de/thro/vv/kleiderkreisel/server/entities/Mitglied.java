@@ -27,6 +27,7 @@ public class Mitglied {
     @Version
     private Long version;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "besitzer")
     List<Kleidung> kleider;
 
@@ -56,9 +57,16 @@ public class Mitglied {
         this.password = password;
         this.kontostand = kontostand;
         this.version = 0L;
-        this.kleider = new LinkedList<>();
+        //this.kleider = new LinkedList<>();
         this.kaeufe = new LinkedList<>();
         this.verkaeufe = new LinkedList<>();
+    }
+
+    public void addKleidung (Kleidung kleidung){
+        if (kleider == null)
+            kleider = new LinkedList<>();
+        kleidung.setBesitzer(this);
+        kleider.add(kleidung);
     }
 
     public Long getNummer() {

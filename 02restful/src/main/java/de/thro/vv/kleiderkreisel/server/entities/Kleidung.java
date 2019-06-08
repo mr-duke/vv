@@ -32,7 +32,6 @@ public class Kleidung {
 
     //@JsonIgnore
     @ManyToOne
-    @JoinColumn
     private Mitglied besitzer;
 
     public enum Kleidergroesse {S, M, L, XL};

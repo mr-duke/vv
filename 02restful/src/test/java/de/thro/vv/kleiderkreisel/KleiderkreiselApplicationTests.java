@@ -144,13 +144,11 @@ public class KleiderkreiselApplicationTests {
 
         Adresse a = new Adresse("Asgardstr.1", "999", "Asgard");
         Mitglied m10 = new Mitglied("Odinson", "Thor", "thor@asgard.ag", a, "hammer", 1000);
-        Kleidung k5 = new Kleidung(10000L, 5000L, Kleidung.Kleidergroesse.M, Kleidung.Geschlecht.M, Kleidung.Typ.ANZUG, "Boss" );
+        Kleidung k5 = new Kleidung(10000L, 5000L, Kleidung.Kleidergroesse.M, Kleidung.Geschlecht.M, Kleidung.Typ.ANZUG, "Bos" );
 
-        mproxy.createNewMitglied(m10);
-        kproxy.createNewKleidung(k5);
-        m10.setKleider(Arrays.asList(k5));
+        Mitglied thor = mproxy.createNewMitglied(m10);
+        thor.setKleider(Arrays.asList(k5));
 
-
-
+        Kleidung anzug = kproxy.createNewKleidung(k5);
     }
 }
