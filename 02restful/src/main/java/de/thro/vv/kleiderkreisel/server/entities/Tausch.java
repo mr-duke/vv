@@ -18,13 +18,13 @@ public class Tausch {
     // @Convert(converter = DatumsConverter.class)
     private LocalDateTime tauschdatum;
 
-    @ManyToOne (fetch = FetchType.LAZY)
-    @JsonBackReference (value = "verkaeufe")
+
+    @ManyToOne (fetch = FetchType.EAGER)
     @JoinColumn (name = "verkaeufer_id")
     private Mitglied verkaeufer;
 
-    @ManyToOne (fetch = FetchType.LAZY)
-    @JsonBackReference (value = "kaeufe")
+
+    @ManyToOne (fetch = FetchType.EAGER)
     @JoinColumn (name = "kaeufer_id")
     private Mitglied kaeufer;
 

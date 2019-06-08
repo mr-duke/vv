@@ -35,14 +35,14 @@ public class Mitglied {
     @JsonManagedReference
     private List<Kleidung> kleider = new LinkedList<>();
 
-
+    @JsonIgnore
     @OneToMany(mappedBy = "kaeufer", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference(value = "kaeufe")
+    //@JsonManagedReference(value = "kaeufe")
     private List<Tausch> kaeufe = new LinkedList<>();
 
-
+    @JsonIgnore
     @OneToMany(mappedBy = "verkaeufer", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference (value = "verkaeufe")
+    //@JsonManagedReference (value = "verkaeufe")
     private List<Tausch> verkaeufe = new LinkedList<>();
 
 

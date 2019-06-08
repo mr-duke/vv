@@ -2,6 +2,7 @@ package de.thro.vv.kleiderkreisel;
 
 import de.thro.vv.kleiderkreisel.client.KleidungControllerProxy;
 import de.thro.vv.kleiderkreisel.client.MitgliedControllerProxy;
+import de.thro.vv.kleiderkreisel.client.TauschControllerProxy;
 import de.thro.vv.kleiderkreisel.server.entities.Adresse;
 import de.thro.vv.kleiderkreisel.server.entities.Kleidung;
 import de.thro.vv.kleiderkreisel.server.entities.Mitglied;
@@ -31,6 +32,7 @@ public class KleiderkreiselApplicationTests {
 
         KleidungControllerProxy kproxy = new KleidungControllerProxy();
         MitgliedControllerProxy mproxy = new MitgliedControllerProxy();
+        TauschControllerProxy tproxy = new TauschControllerProxy();
 
         Adresse a = new Adresse("Asgardstr.1", "999", "Asgard");
         Mitglied m1 = new Mitglied("Odinson", "Thor", "thor@asgard.ag", a, "hammer", 10000);
@@ -42,17 +44,27 @@ public class KleiderkreiselApplicationTests {
         Kleidung k4 = new Kleidung(8000L, 4000L, Kleidung.Kleidergroesse.L, Kleidung.Geschlecht.M, Kleidung.Typ.HEMD, "SmartGentleman" );
 
         Tausch t1 = new Tausch(LocalDateTime.now());
+        Tausch t2 = new Tausch(LocalDateTime.now().minusMinutes(10));
 
         m1.addKleidung(k1);
         m1.addKleidung(k2);
         m1.addKleidung(k3);
         m2.addKleidung(k4);
 
-        m1.addVerkaeufe(t1);
-        m2.addKaeufe(t1);
+        //m1.addVerkaeufe(t1);
+        //m2.addKaeufe(t1);
 
-        mproxy.createNewMitglied(m1);
-        mproxy.createNewMitglied(m2);
+
+        Mitglied thor = mproxy.createNewMitglied(m1);
+        Mitglied odin = mproxy.createNewMitglied(m2);
+
+        t1.setVerkaeufer(thor);
+        t1.setKaeufer(odin);
+        tproxy.createNewTausch(t1);
+
+        t2.setVerkaeufer(odin);
+        t2.setKaeufer(thor);
+        tproxy.createNewTausch(t2);
 
         //Mitglied thor = mproxy.findMitgliedById(1L);
         //mproxy.deleteMitglied(thor);
