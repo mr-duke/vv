@@ -32,7 +32,7 @@ public class Kleidung {
     @Version
     private Long version;
 
-    //@JsonIgnore
+    // @JsonIgnore
     @ManyToOne
     private Mitglied besitzer;
 
