@@ -24,7 +24,6 @@ public class KleiderkreiselApplicationTests {
     public void contextLoads() {
     }
 
-
     //@Test
     public void tauschplattformTest(){
 

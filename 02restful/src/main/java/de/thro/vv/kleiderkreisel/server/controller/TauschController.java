@@ -92,12 +92,13 @@ public class TauschController {
     )
     public ResponseEntity<?> createNewTausch (@RequestBody Tausch tausch,
                                                 UriComponentsBuilder uriComponentsBuilder) {
-        trepo.save(tausch);
+        Tausch tauschNew = trepo.save(tausch);
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setLocation(uriComponentsBuilder
                 .path("api/v1/tausch/{id}")
-                .buildAndExpand(tausch.getId()).toUri());
-        return new ResponseEntity<String>(httpHeaders, HttpStatus.CREATED);
+                .buildAndExpand(tauschNew.getId()).toUri());
+
+        return new ResponseEntity<>(tauschNew, httpHeaders, HttpStatus.CREATED);
     }
 
 
@@ -129,8 +130,9 @@ public class TauschController {
         // ID beibt unverändert
         existingTausch.setTauschdatum(tauschUpdate.getTauschdatum());
 
-        trepo.save(existingTausch);
-        return new ResponseEntity<>(HttpStatus.OK);
+        Tausch updatedTausch = trepo.save(existingTausch);
+
+        return new ResponseEntity<>(updatedTausch, HttpStatus.OK);
     }
 
 

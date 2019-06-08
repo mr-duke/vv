@@ -51,12 +51,10 @@ public class TauschControllerProxy {
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
 
         HttpEntity<Tausch> entity = new HttpEntity<>(tauschNew, httpHeaders);
-        // Neuer Tauschvorgang erhält Server-generierte ID, daher zuerst passende URI ausgeben lassen
-        URI uri = restTemplate.postForLocation(
-                BASE_URI + VERSION + "tausch/",
-                entity, Tausch.class);
+        ResponseEntity<Tausch> response = restTemplate.exchange(
+                BASE_URI + VERSION + "tausch",
+                HttpMethod.POST, entity, Tausch.class);
 
-        ResponseEntity<Tausch> response = restTemplate.getForEntity(uri, Tausch.class);
         if (response.getStatusCode().equals(HttpStatus.CREATED)){
             return response.getBody();
         } else {
