@@ -31,12 +31,12 @@ public class Mitglied {
     @OneToMany(mappedBy = "besitzer", cascade = CascadeType.ALL)
     List<Kleidung> kleider;
 
-    // @JsonIgnore
-    @OneToMany(mappedBy = "kaeufer")
+    @JsonIgnore
+    @OneToMany(mappedBy = "kaeufer", cascade = CascadeType.ALL)
     private List<Tausch> kaeufe;
 
-    // @JsonIgnore
-    @OneToMany(mappedBy = "verkaeufer")
+    @JsonIgnore
+    @OneToMany(mappedBy = "verkaeufer", cascade = CascadeType.ALL)
     private List<Tausch> verkaeufe;
 
 
@@ -57,17 +57,8 @@ public class Mitglied {
         this.password = password;
         this.kontostand = kontostand;
         this.version = 0L;
-        //this.kleider = new LinkedList<>();
-        this.kaeufe = new LinkedList<>();
-        this.verkaeufe = new LinkedList<>();
     }
 
-    public void addKleidung (Kleidung kleidung){
-        if (kleider == null)
-            kleider = new LinkedList<>();
-        kleidung.setBesitzer(this);
-        kleider.add(kleidung);
-    }
 
     public Long getNummer() {
         return nummer;
