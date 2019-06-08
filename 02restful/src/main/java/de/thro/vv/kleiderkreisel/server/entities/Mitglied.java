@@ -28,7 +28,7 @@ public class Mitglied {
     private Long version;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "besitzer")
+    @OneToMany(mappedBy = "besitzer", cascade = CascadeType.ALL)
     List<Kleidung> kleider;
 
     // @JsonIgnore

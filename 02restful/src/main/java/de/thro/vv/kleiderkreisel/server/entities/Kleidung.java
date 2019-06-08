@@ -9,8 +9,10 @@ import java.util.Objects;
 public class Kleidung {
 
     // Minimaler Anteil vom Neupreis
+    @Transient
     private final double PREISGRENZE_MIN = 0.1;
     // Maximaler Anteil vom Neupreis
+    @Transient
     private final double PREISGRENZE_MAX = 0.5;
 
     @Id

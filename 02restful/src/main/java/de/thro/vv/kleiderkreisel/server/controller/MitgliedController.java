@@ -135,7 +135,7 @@ public class MitgliedController {
         existingMitglied.setKontostand(mitgliedUpdate.getKontostand());
         existingMitglied.setPassword(mitgliedUpdate.getPassword());
         existingMitglied.setFoto(mitgliedUpdate.getFoto());
-        existingMitglied.setKleider(mitgliedUpdate.getKleider());
+        //existingMitglied.setKleider(mitgliedUpdate.getKleider());
         existingMitglied.setKaeufe(mitgliedUpdate.getKaeufe());
         existingMitglied.setVerkaeufe(mitgliedUpdate.getVerkaeufe());
 
