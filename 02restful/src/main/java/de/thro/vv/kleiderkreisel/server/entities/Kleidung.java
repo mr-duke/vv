@@ -32,8 +32,9 @@ public class Kleidung {
     @Version
     private Long version;
 
-    // @JsonIgnore
-    @ManyToOne
+    @JsonIgnore
+    @ManyToOne (fetch = FetchType.LAZY)
+    @JoinColumn (name = "besitzer_id")
     private Mitglied besitzer;
 
     public enum Kleidergroesse {S, M, L, XL};

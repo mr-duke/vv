@@ -32,26 +32,23 @@ public class KleiderkreiselApplicationTests {
         MitgliedControllerProxy mproxy = new MitgliedControllerProxy();
 
         Adresse a = new Adresse("Asgardstr.1", "999", "Asgard");
-        Mitglied m10 = new Mitglied("Odinson", "Thor", "thor@asgard.ag", a, "hammer", 1000);
-        Mitglied m11 = new Mitglied("Allvater", "Odin", "thor@asgard.ag", a, "hammer", 1000);
-        Kleidung k5 = new Kleidung(10000L, 5000L, Kleidung.Kleidergroesse.M, Kleidung.Geschlecht.M, Kleidung.Typ.ANZUG, "Bos" );
-        Kleidung k6 = new Kleidung(10000L, 5000L, Kleidung.Kleidergroesse.S, Kleidung.Geschlecht.M, Kleidung.Typ.ANZUG, "Boss" );
-        Kleidung k7 = new Kleidung(10000L, 5000L, Kleidung.Kleidergroesse.L, Kleidung.Geschlecht.M, Kleidung.Typ.ANZUG, "Bosss" );
+        Mitglied m1 = new Mitglied("Odinson", "Thor", "thor@asgard.ag", a, "hammer", 10000);
+        Mitglied m2 = new Mitglied("Allvater", "Odin", "odin@asgard.ag", a, "power", 20000);
 
-        Mitglied thor = mproxy.createNewMitglied(m10);
-        Mitglied odin = mproxy.createNewMitglied(m11);
-        long odinId = odin.getNummer();
-        long thorId= thor.getNummer();
-        thor.setKleider(Arrays.asList(k5));
-        odin.setKleider(Arrays.asList(k7));
+        Kleidung k1 = new Kleidung(10000L, 5000L, Kleidung.Kleidergroesse.M, Kleidung.Geschlecht.M, Kleidung.Typ.ANZUG, "Boss" );
+        Kleidung k2 = new Kleidung(1000L, 400L, Kleidung.Kleidergroesse.S, Kleidung.Geschlecht.M, Kleidung.Typ.PULLOVER, "Northwind" );
+        Kleidung k3 = new Kleidung(5000L, 2000L, Kleidung.Kleidergroesse.L, Kleidung.Geschlecht.M, Kleidung.Typ.SHIRT, "McNeil" );
+        Kleidung k4 = new Kleidung(8000L, 4000L, Kleidung.Kleidergroesse.L, Kleidung.Geschlecht.M, Kleidung.Typ.HEMD, "Gentleman" );
 
-        k6.setBesitzer(odin);
+        m1.addKleidung(k1);
+        m1.addKleidung(k2);
+        m1.addKleidung(k3);
+        m2.addKleidung(k4);
 
-        kproxy.createNewKleidung(k5);
-        kproxy.createNewKleidung(k6);
-        kproxy.createNewKleidung(k7);
+        mproxy.createNewMitglied(m1);
+        mproxy.createNewMitglied(m2);
 
-        //Mitglied thor2 = mproxy.findMitgliedById(thorId);
-        //mproxy.deleteMitglied(thor2);
+        Mitglied thor = mproxy.findMitgliedById(1L);
+        mproxy.deleteMitglied(thor);
     }
 }

@@ -1,6 +1,7 @@
 package de.thro.vv.kleiderkreisel.server.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import sun.security.krb5.internal.tools.Klist;
 
 import javax.persistence.*;
 import java.util.LinkedList;
@@ -27,9 +28,9 @@ public class Mitglied {
     @Version
     private Long version;
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "besitzer", cascade = CascadeType.ALL)
-    List<Kleidung> kleider;
+
+    @OneToMany(mappedBy = "besitzer", cascade = CascadeType.ALL, orphanRemoval = true)
+    List<Kleidung> kleider = new LinkedList<>();
 
     @JsonIgnore
     @OneToMany(mappedBy = "kaeufer", cascade = CascadeType.ALL)
@@ -59,6 +60,40 @@ public class Mitglied {
         this.version = 0L;
     }
 
+    // add und remove-Methoden zur Synchronisierung der bidirektionalen Beziehung zwischen Mitglied und Kleidung
+    public void addKleidung(Kleidung kleidung) {
+        kleider.add(kleidung);
+        kleidung.setBesitzer(this);
+    }
+
+    public void removeKleidung (Kleidung kleidung) {
+        kleider.remove(kleidung);
+        kleidung.setBesitzer(null);
+    }
+
+    public List<Kleidung> getKleider() {
+        return kleider;
+    }
+
+    public void setKleider(List<Kleidung> kleider) {
+        this.kleider = kleider;
+    }
+
+    public List<Tausch> getKaeufe() {
+        return kaeufe;
+    }
+
+    public void setKaeufe(List<Tausch> kaeufe) {
+        this.kaeufe = kaeufe;
+    }
+
+    public List<Tausch> getVerkaeufe() {
+        return verkaeufe;
+    }
+
+    public void setVerkaeufe(List<Tausch> verkaeufe) {
+        this.verkaeufe = verkaeufe;
+    }
 
     public Long getNummer() {
         return nummer;
@@ -130,39 +165,6 @@ public class Mitglied {
 
     public void setVersion(Long version) {
         this.version = version;
-    }
-
-    public List<Kleidung> getKleider() {
-        return kleider;
-    }
-
-    public void setKleider(List<Kleidung> kleider) {
-        this.kleider = kleider;
-        for (Kleidung kl : kleider){
-            kl.setBesitzer(this);
-        }
-    }
-
-    public List<Tausch> getKaeufe() {
-        return kaeufe;
-    }
-
-    public void setKaeufe(List<Tausch> kaeufe) {
-        this.kaeufe = kaeufe;
-        for (Tausch t : kaeufe){
-            t.setKaeufer(this);
-        }
-    }
-
-    public List<Tausch> getVerkaeufe() {
-        return verkaeufe;
-    }
-
-    public void setVerkaeufe(List<Tausch> verkaeufe) {
-        this.verkaeufe = verkaeufe;
-        for (Tausch t : verkaeufe){
-            t.setVerkaeufer(this);
-        }
     }
 
     @Override
