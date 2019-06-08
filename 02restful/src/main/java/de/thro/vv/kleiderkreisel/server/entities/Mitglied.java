@@ -30,15 +30,15 @@ public class Mitglied {
 
 
     @OneToMany(mappedBy = "besitzer", cascade = CascadeType.ALL, orphanRemoval = true)
-    List<Kleidung> kleider = new LinkedList<>();
+    private List<Kleidung> kleider = new LinkedList<>();
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "kaeufer", cascade = CascadeType.ALL)
-    private List<Tausch> kaeufe;
+    //@JsonIgnore
+    @OneToMany(mappedBy = "kaeufer", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Tausch> kaeufe = new LinkedList<>();
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "verkaeufer", cascade = CascadeType.ALL)
-    private List<Tausch> verkaeufe;
+    //@JsonIgnore
+    @OneToMany(mappedBy = "verkaeufer", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Tausch> verkaeufe = new LinkedList<>();
 
 
     public Mitglied() {
@@ -69,6 +69,26 @@ public class Mitglied {
     public void removeKleidung (Kleidung kleidung) {
         kleider.remove(kleidung);
         kleidung.setBesitzer(null);
+    }
+    // add und remove-Methoden zur Synchronisierung der bidirektionalen Beziehung zwischen Mitglied und Tausch (Kauf und Verkauf)
+    public void addKaeufe(Tausch tausch) {
+        kaeufe.add(tausch);
+        tausch.setKaeufer(this);
+    }
+
+    public void removeKaeufe (Tausch tausch) {
+        kaeufe.remove(tausch);
+        tausch.setKaeufer(null);
+    }
+
+    public void addVerkaeufe(Tausch tausch) {
+        verkaeufe.add(tausch);
+        tausch.setVerkaeufer(this);
+    }
+
+    public void removeVerkaeufe (Tausch tausch) {
+        verkaeufe.remove(tausch);
+        tausch.setVerkaeufer(null);
     }
 
     public List<Kleidung> getKleider() {

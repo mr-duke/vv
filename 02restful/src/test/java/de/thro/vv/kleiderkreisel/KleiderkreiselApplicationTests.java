@@ -5,6 +5,7 @@ import de.thro.vv.kleiderkreisel.client.MitgliedControllerProxy;
 import de.thro.vv.kleiderkreisel.server.entities.Adresse;
 import de.thro.vv.kleiderkreisel.server.entities.Kleidung;
 import de.thro.vv.kleiderkreisel.server.entities.Mitglied;
+import de.thro.vv.kleiderkreisel.server.entities.Tausch;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -12,6 +13,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestClientException;
 
 import java.lang.reflect.Array;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 
 import static org.junit.Assert.*;
@@ -24,7 +26,7 @@ public class KleiderkreiselApplicationTests {
     public void contextLoads() {
     }
 
-    //@Test
+    @Test
     public void tauschplattformTest(){
 
         KleidungControllerProxy kproxy = new KleidungControllerProxy();
@@ -39,15 +41,20 @@ public class KleiderkreiselApplicationTests {
         Kleidung k3 = new Kleidung(5000L, 2000L, Kleidung.Kleidergroesse.L, Kleidung.Geschlecht.M, Kleidung.Typ.SHIRT, "McNeil" );
         Kleidung k4 = new Kleidung(8000L, 4000L, Kleidung.Kleidergroesse.L, Kleidung.Geschlecht.M, Kleidung.Typ.HEMD, "Gentleman" );
 
+        Tausch t1 = new Tausch(LocalDateTime.now());
+
         m1.addKleidung(k1);
         m1.addKleidung(k2);
         m1.addKleidung(k3);
         m2.addKleidung(k4);
 
+        m1.addVerkaeufe(t1);
+        m2.addKaeufe(t1);
+
         mproxy.createNewMitglied(m1);
         mproxy.createNewMitglied(m2);
 
-        Mitglied thor = mproxy.findMitgliedById(1L);
-        mproxy.deleteMitglied(thor);
+        //Mitglied thor = mproxy.findMitgliedById(1L);
+        //mproxy.deleteMitglied(thor);
     }
 }

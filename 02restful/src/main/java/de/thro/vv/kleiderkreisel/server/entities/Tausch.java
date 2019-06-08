@@ -1,5 +1,7 @@
 package de.thro.vv.kleiderkreisel.server.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -13,9 +15,13 @@ public class Tausch {
     private Long id;
     // @Convert(converter = DatumsConverter.class)
     private LocalDateTime tauschdatum;
-    @ManyToOne
+    @JsonIgnore
+    @ManyToOne (fetch = FetchType.LAZY)
+    @JoinColumn (name = "verkaeufer_id")
     private Mitglied verkaeufer;
-    @ManyToOne
+    @JsonIgnore
+    @ManyToOne (fetch = FetchType.LAZY)
+    @JoinColumn (name = "kaeufer_id")
     private Mitglied kaeufer;
     // Optimistische Strategie über Versionszähler zur Vermeidung des Lost-Update-Problems
     @Version
