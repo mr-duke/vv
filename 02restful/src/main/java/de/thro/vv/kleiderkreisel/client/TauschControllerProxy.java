@@ -1,6 +1,7 @@
 package de.thro.vv.kleiderkreisel.client;
 
 import de.thro.vv.kleiderkreisel.server.entities.Adresse;
+import de.thro.vv.kleiderkreisel.server.entities.Konto;
 import de.thro.vv.kleiderkreisel.server.entities.Mitglied;
 import de.thro.vv.kleiderkreisel.server.entities.Tausch;
 import org.springframework.core.ParameterizedTypeReference;
@@ -13,6 +14,10 @@ import java.util.Arrays;
 import java.util.List;
 
 public class TauschControllerProxy {
+
+    // Gebühr pro Tauschvorgang in EuroCent
+    private final long TAUSCHGEBUEHR = 50;
+
 
     private final String BASE_URI = "http://localhost:8080/";
     private final String VERSION = "api/v1/";
@@ -44,19 +49,47 @@ public class TauschControllerProxy {
         }
     }
 
-    public Tausch createNewTausch (Tausch tauschNew){
+    public Tausch createNewTausch (Mitglied kaeufer, Mitglied verkaeufer){
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
 
-        HttpEntity<Tausch> entity = new HttpEntity<>(tauschNew, httpHeaders);
-        ResponseEntity<Tausch> response = restTemplate.exchange(
-                BASE_URI + VERSION + "tausch",
-                HttpMethod.POST, entity, Tausch.class);
+        // Tauschgebühr von beiden Partner abziehen;
+        long neuerKontostandVerk = verkaeufer.getKontostand() - TAUSCHGEBUEHR;
+        long neuerKontostandKaeuf = kaeufer.getKontostand() - TAUSCHGEBUEHR;
+        // Update und Abspeichern der Entities
+        verkaeufer.setKontostand(neuerKontostandVerk);
+        kaeufer.setKontostand(neuerKontostandKaeuf);
 
-        if (response.getStatusCode().equals(HttpStatus.CREATED)){
-            return response.getBody();
+        // Verkaeufer updaten
+        HttpEntity<Mitglied> entity = new HttpEntity<>(verkaeufer, httpHeaders);
+        ResponseEntity<Mitglied> response = restTemplate.exchange(
+                BASE_URI + VERSION + "mitglieder/" + verkaeufer.getNummer(),
+                HttpMethod.PUT, entity, Mitglied.class);
+        Mitglied verkaeuferUpdated = response.getBody();
+
+        // Kaeufer updaten
+        restTemplate = new RestTemplate();
+        HttpEntity<Mitglied> entity2 = new HttpEntity<>(kaeufer, httpHeaders);
+        ResponseEntity<Mitglied> response2 = restTemplate.exchange(
+                BASE_URI + VERSION + "mitglieder/" + kaeufer.getNummer(),
+                HttpMethod.PUT, entity2, Mitglied.class);
+        Mitglied kaeuferUpdated = response2.getBody();
+
+        // Neuen Tauschvorgang anlegen
+        Tausch tausch = new Tausch(LocalDateTime.now());
+        tausch.setKaeufer(kaeuferUpdated);
+        tausch.setVerkaeufer(verkaeuferUpdated);
+
+        restTemplate = new RestTemplate();
+        HttpEntity<Tausch> entity3 = new HttpEntity<>(tausch, httpHeaders);
+        ResponseEntity<Tausch> response3 = restTemplate.exchange(
+                BASE_URI + VERSION + "tausch",
+                HttpMethod.POST, entity3, Tausch.class);
+
+        if (response3.getStatusCode().equals(HttpStatus.CREATED)){
+            return response3.getBody();
         } else {
             System.err.println("Fehler beim Anlegen eines neuen Tauschvorgangs");
             // Im Fehlerfall immer null zurückgeben

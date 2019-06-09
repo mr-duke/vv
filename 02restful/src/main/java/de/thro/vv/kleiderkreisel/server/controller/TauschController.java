@@ -1,5 +1,8 @@
 package de.thro.vv.kleiderkreisel.server.controller;
 
+import de.thro.vv.kleiderkreisel.server.entities.Konto;
+import de.thro.vv.kleiderkreisel.server.repositories.KontoRepository;
+import de.thro.vv.kleiderkreisel.server.repositories.MitgliedRepository;
 import de.thro.vv.kleiderkreisel.server.repositories.TauschRepository;
 import de.thro.vv.kleiderkreisel.server.entities.Tausch;
 import io.swagger.annotations.Api;
@@ -14,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -25,10 +29,19 @@ import java.util.List;
 public class TauschController {
 
     private TauschRepository trepo;
+    private KontoRepository kontoRepo;
+    private MitgliedRepository mrepo;
+    // Handelplattform könnte mehrere Konten besitzen; in diesem Beispiel wird der Einfachheit halber
+    // nur über ein und dasselbe Konto abgerechnet
+    private final long KONTO_ID = 1;
+    // Gebühr pro Tauschvorgang in EuroCent
+    private final long TAUSCHGEBUEHR = 50;
 
     @Autowired
-    public TauschController (TauschRepository trepo) {
+    public TauschController (TauschRepository trepo, KontoRepository kontoRepo, MitgliedRepository mrepo) {
         this.trepo = trepo;
+        this.kontoRepo = kontoRepo;
+        this. mrepo = mrepo;
     }
 
     @ApiOperation(
@@ -92,11 +105,19 @@ public class TauschController {
     )
     public ResponseEntity<?> createNewTausch (@RequestBody Tausch tausch,
                                                 UriComponentsBuilder uriComponentsBuilder) {
+
         Tausch tauschNew = trepo.save(tausch);
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setLocation(uriComponentsBuilder
                 .path("api/v1/tausch/{id}")
                 .buildAndExpand(tauschNew.getId()).toUri());
+
+        Konto konto = kontoRepo.findById(KONTO_ID).orElse(null);
+        // Zweimal Tauschgebühr pro Tausch auf das Konto der Plattform gutschreiben
+        long neuerKontostand = konto.getKontostand() + 2*TAUSCHGEBUEHR;
+        konto.setKontostand(neuerKontostand);
+        konto.setZuletztGeaendert(LocalDateTime.now());
+        kontoRepo.save(konto);
 
         return new ResponseEntity<>(tauschNew, httpHeaders, HttpStatus.CREATED);
     }

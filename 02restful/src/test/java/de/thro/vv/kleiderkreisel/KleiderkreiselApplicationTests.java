@@ -51,21 +51,22 @@ public class KleiderkreiselApplicationTests {
         m1.addKleidung(k3);
         m2.addKleidung(k4);
 
-        //m1.addVerkaeufe(t1);
-        //m2.addKaeufe(t1);
-
-
         Mitglied thor = mproxy.createNewMitglied(m1);
         Mitglied odin = mproxy.createNewMitglied(m2);
+        long thorId = thor.getNummer();
+        long odinId = odin.getNummer();
 
-        t1.setVerkaeufer(thor);
-        t1.setKaeufer(odin);
-        tproxy.createNewTausch(t1);
 
-        t2.setVerkaeufer(odin);
-        t2.setKaeufer(thor);
-        tproxy.createNewTausch(t2);
+        tproxy.createNewTausch(mproxy.findMitgliedById(odinId), mproxy.findMitgliedById(thorId));
+        //t1.setVerkaeufer(thor);
+        //t1.setKaeufer(odin);
+        //tproxy.createNewTausch(thor, odin);
 
+
+        tproxy.createNewTausch(mproxy.findMitgliedById(thorId), mproxy.findMitgliedById(odinId));
+
+
+        tproxy.createNewTausch(mproxy.findMitgliedById(thorId), mproxy.findMitgliedById(odinId));
         //Mitglied thor = mproxy.findMitgliedById(1L);
         //mproxy.deleteMitglied(thor);
     }
