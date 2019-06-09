@@ -1,9 +1,9 @@
 package de.thro.vv.kleiderkreisel.server.entities;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import sun.security.krb5.internal.tools.Klist;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
 import java.util.LinkedList;
@@ -12,6 +12,10 @@ import java.util.Objects;
 
 @Entity
 public class Mitglied {
+
+    // Erlaubte Maximalzahl an Kleider pro Mitglied
+    @Transient
+    private final int MAX_ANZAHL_KLEIDER = 10;
 
     @Id
     @GeneratedValue
@@ -30,7 +34,6 @@ public class Mitglied {
     @Version
     private Long version;
 
-
     @OneToMany(mappedBy = "besitzer", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<Kleidung> kleider = new LinkedList<>();
@@ -42,7 +45,6 @@ public class Mitglied {
     @JsonIgnore
     @OneToMany(mappedBy = "verkaeufer", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Tausch> verkaeufe = new LinkedList<>();
-
 
     public Mitglied() {
     }
@@ -58,15 +60,26 @@ public class Mitglied {
         this.email = email;
         this.adresse = adresse;
         this.foto = foto;
-        this.password = password;
+        this.password = encodePassword(password);
         this.kontostand = kontostand;
         this.version = 0L;
     }
 
+    // Einfache Varainte des Passwort-Hashing mit BCrypt um Passwörter im Klartext zu vermeiden
+    private String encodePassword (String password) {
+        PasswordEncoder encoder = new BCryptPasswordEncoder();
+        return encoder.encode(password);
+    }
+
     // add und remove-Methoden zur Synchronisierung der bidirektionalen Beziehung zwischen Mitglied und Kleidung
     public void addKleidung(Kleidung kleidung) {
-        kleider.add(kleidung);
-        kleidung.setBesitzer(this);
+        // Prüfe, ob Anzahl an maximal erlaubten Kleidungsstücken pro Mitglied überschritten
+        if (getKleider().size() < MAX_ANZAHL_KLEIDER) {
+            kleider.add(kleidung);
+            kleidung.setBesitzer(this);
+        } else {
+            throw new IllegalArgumentException("Maximalzahl erlaubter Kleidungsstück erreicht!");
+        }
     }
 
     public void removeKleidung (Kleidung kleidung) {
@@ -171,7 +184,7 @@ public class Mitglied {
     }
 
     public void setPassword(String password) {
-        this.password = password;
+        this.password = encodePassword(password);
     }
 
     public long getKontostand() {

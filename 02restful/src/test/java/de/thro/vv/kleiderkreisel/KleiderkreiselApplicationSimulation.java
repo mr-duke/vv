@@ -6,18 +6,18 @@ import de.thro.vv.kleiderkreisel.client.TauschControllerProxy;
 import de.thro.vv.kleiderkreisel.server.entities.Adresse;
 import de.thro.vv.kleiderkreisel.server.entities.Kleidung;
 import de.thro.vv.kleiderkreisel.server.entities.Mitglied;
-import de.thro.vv.kleiderkreisel.server.entities.Tausch;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.web.client.RestClientException;
 
-import java.lang.reflect.Array;
-import java.time.LocalDateTime;
-import java.util.Arrays;
 
-import static org.junit.Assert.*;
+
+// Kommentar von Karl Herzog:
+// WICHTIG: Dieser Test bereinigt Datenbank nicht, um nach Testablauf konkrete Werte in Datenbank sehen zu können!
+// Diesen Test immer UNABHÄNGIG von den beiden anderen Unit-Tests laufen lassen, sonst Verfälschung der Tests durch alte Daten
+
+
 
 @RunWith(SpringRunner.class)
 @SpringBootTest

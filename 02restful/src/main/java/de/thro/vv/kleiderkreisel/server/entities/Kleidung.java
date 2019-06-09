@@ -1,7 +1,6 @@
 package de.thro.vv.kleiderkreisel.server.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -53,17 +52,22 @@ public class Kleidung {
 
     public Kleidung(long neupreis, long tauschwert, Kleidergroesse groesse, Geschlecht geschlecht, Typ typ, String hersteller, String foto) {
         this.neupreis = neupreis;
-        // Tauschwert muss zwischen 10 und 50 % vom Neupreis liegen
-        if (tauschwert >= neupreis*PREISGRENZE_MIN && tauschwert <= neupreis*PREISGRENZE_MAX ) {
+        if (priceChecker(neupreis, tauschwert)) {
             this.tauschwert = tauschwert;
-        } else
+        } else {
             throw new IllegalArgumentException("Tauschwert ausserhalb erlaubter Preisspanne");
+        }
         this.groesse = groesse;
         this.geschlecht = geschlecht;
         this.typ = typ;
         this.hersteller = hersteller;
         this.foto = foto;
         this.version = 0L;
+    }
+
+    // Tauschwert muss zwischen 10 und 50 % vom Neupreis liegen
+    private boolean priceChecker (long neupreis, long tauschwert) {
+        return (tauschwert >= neupreis*PREISGRENZE_MIN && tauschwert <= neupreis*PREISGRENZE_MAX );
     }
 
     public Long getId() {
@@ -87,10 +91,11 @@ public class Kleidung {
     }
 
     public void setTauschwert(long tauschwert) {
-        if (tauschwert >= neupreis*PREISGRENZE_MIN && tauschwert <= neupreis*PREISGRENZE_MAX ) {
+        if (priceChecker(getNeupreis(), tauschwert)){
             this.tauschwert = tauschwert;
-        } else
+        } else {
             throw new IllegalArgumentException("Tauschwert ausserhalb erlaubter Preisspanne");
+        }
     }
 
     public Kleidergroesse getGroesse() {
