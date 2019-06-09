@@ -15,6 +15,7 @@ public class KleiderkreiselApplication {
     @Bean
     InitializingBean initialisiere (KontoRepository kontoRepo) {
         return new InitializingBean() {
+            // Lege ein Demo-Konto für die Tauschplattform zur Abrechnung der Tauschgebühren an
             @Override
             public void afterPropertiesSet() throws Exception {
                 Konto konto = new Konto(1L, 0L, LocalDateTime.now());
