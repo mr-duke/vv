@@ -3,7 +3,7 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import java.util.Properties;
 
-public class Receiver {
+public class Publisher {
 
     // WICHTIG für mündliche Prüfung:
     // 1. Publisher Subscriber Pattern: asynchrones Observer-Pattern
@@ -21,7 +21,6 @@ public class Receiver {
         ConnectionFactory connectionFactory =
                 (ConnectionFactory) ctx.lookup("ConnectionFactory");
 
-        Queue source = (Queue) ctx.lookup("dynamicQueues/charlysqueue");
 
         Connection connection = connectionFactory.createConnection();
         connection.start();
@@ -29,14 +28,20 @@ public class Receiver {
         Session session =
                 connection.createSession(false,Session.AUTO_ACKNOWLEDGE);
 
-        MessageConsumer consumer =
-                session.createConsumer(source);
+        Topic destination = (Topic) session.createTopic("charlystopic");
 
-        TextMessage message = (TextMessage) consumer.receive();
+        MessageProducer producer =
+                session.createProducer(destination);
+        producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
 
-        System.out.println("Empfangen:" + message);
+        for (int i = 0; i < 100000 ; i++) {
+            Thread.sleep(5000);
+            TextMessage message =
+                    session.createTextMessage("Servus Charly, VV ist super!");
+            producer.send(message);
+        }
 
-        consumer.close(); session.close();
+        producer.close(); session.close();
         connection.stop(); connection.close();
     }
 }

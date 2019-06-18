@@ -16,7 +16,7 @@ public class Sender {
         ConnectionFactory connectionFactory =
                 (ConnectionFactory) ctx.lookup("ConnectionFactory");
 
-        Queue destination = (Queue) ctx.lookup("dynamicQueues/vvqueue");
+        Queue destination = (Queue) ctx.lookup("dynamicQueues/charlysqueue");
 
         Connection connection = connectionFactory.createConnection();
         connection.start();
@@ -29,7 +29,7 @@ public class Sender {
         producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
 
         TextMessage message =
-                session.createTextMessage("Hello World, vv ist doof");
+                session.createTextMessage("Servus Charly, VV ist super!");
         producer.send(message);
 
         producer.close(); session.close();
