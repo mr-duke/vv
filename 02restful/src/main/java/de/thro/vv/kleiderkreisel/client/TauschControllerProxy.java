@@ -1,9 +1,6 @@
 package de.thro.vv.kleiderkreisel.client;
 
-import de.thro.vv.kleiderkreisel.server.entities.Adresse;
-import de.thro.vv.kleiderkreisel.server.entities.Konto;
-import de.thro.vv.kleiderkreisel.server.entities.Mitglied;
-import de.thro.vv.kleiderkreisel.server.entities.Tausch;
+import de.thro.vv.kleiderkreisel.server.entities.*;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
@@ -49,7 +46,7 @@ public class TauschControllerProxy {
         }
     }
 
-    public Tausch createNewTausch (Mitglied kaeufer, Mitglied verkaeufer){
+    public Tausch createNewTausch (Mitglied kaeufer, Mitglied verkaeufer, Kleidung kleidung){
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
@@ -58,9 +55,12 @@ public class TauschControllerProxy {
         // Tauschgebühr von beiden Partner abziehen;
         long neuerKontostandVerk = verkaeufer.getKontostand() - TAUSCHGEBUEHR;
         long neuerKontostandKaeuf = kaeufer.getKontostand() - TAUSCHGEBUEHR;
+
         // Update und Abspeichern der Entities
         verkaeufer.setKontostand(neuerKontostandVerk);
+        verkaeufer.removeKleidung(kleidung);
         kaeufer.setKontostand(neuerKontostandKaeuf);
+        kaeufer.addKleidung(kleidung);
 
         // Verkaeufer updaten
         HttpEntity<Mitglied> entity = new HttpEntity<>(verkaeufer, httpHeaders);
@@ -81,6 +81,7 @@ public class TauschControllerProxy {
         Tausch tausch = new Tausch(LocalDateTime.now());
         tausch.setKaeufer(kaeuferUpdated);
         tausch.setVerkaeufer(verkaeuferUpdated);
+        tausch.setKleidung(kleidung);
 
         restTemplate = new RestTemplate();
         HttpEntity<Tausch> entity3 = new HttpEntity<>(tausch, httpHeaders);

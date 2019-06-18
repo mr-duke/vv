@@ -10,7 +10,6 @@ public class Tausch {
     @Id
     @GeneratedValue
     private Long id;
-    // @Convert(converter = DatumsConverter.class)
     private LocalDateTime tauschdatum;
 
     @ManyToOne (fetch = FetchType.EAGER)
@@ -20,6 +19,10 @@ public class Tausch {
     @ManyToOne (fetch = FetchType.EAGER)
     @JoinColumn (name = "kaeufer_id")
     private Mitglied kaeufer;
+
+    @ManyToOne (fetch = FetchType.EAGER)
+    @JoinColumn (name = "kleidung_id")
+    private Kleidung kleidung;
 
     // Optimistische Strategie über Versionszähler zur Vermeidung des Lost-Update-Problems
     @Version
@@ -70,6 +73,14 @@ public class Tausch {
 
     public void setVersion(Long version) {
         this.version = version;
+    }
+
+    public Kleidung getKleidung() {
+        return kleidung;
+    }
+
+    public void setKleidung(Kleidung kleidung) {
+        this.kleidung = kleidung;
     }
 
     @Override

@@ -1,8 +1,11 @@
 package de.thro.vv.kleiderkreisel.server.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -31,6 +34,10 @@ public class Kleidung {
     // Optimistische Strategie über Versionszähler zur Vermeidung des Lost-Update-Problems
     @Version
     private Long version;
+
+    @JsonIgnore
+    @OneToMany (mappedBy = "kleidung", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Tausch> tauschvorgaenge = new LinkedList<>();
 
     @ManyToOne (fetch = FetchType.LAZY)
     @JsonBackReference
@@ -63,6 +70,17 @@ public class Kleidung {
         this.hersteller = hersteller;
         this.foto = foto;
         this.version = 0L;
+    }
+
+    // add und remove-Methoden zur Synchronisierung der bidirektionalen Beziehung zwischen Kleidung und Tausch
+    public void addTausch (Tausch tausch){
+        tauschvorgaenge.add(tausch);
+        tausch.setKleidung(this);
+    }
+
+    public void removeTausch (Tausch tausch){
+        tauschvorgaenge.remove(tausch);
+        tausch.setKleidung(null);
     }
 
     // Tauschwert muss zwischen 10 und 50 % vom Neupreis liegen
