@@ -135,12 +135,11 @@ public class MitgliedController {
         existingMitglied.setKontostand(mitgliedUpdate.getKontostand());
         existingMitglied.setPassword(mitgliedUpdate.getPassword());
         existingMitglied.setFoto(mitgliedUpdate.getFoto());
+        existingMitglied.getKleider().clear();
+        existingMitglied.getKleider().addAll(mitgliedUpdate.getKleider());
 
         Mitglied updatedMitglied = mrepo.save(existingMitglied);
 
-        // Alternative ??
-        // 1. Alles auskommentieren
-        // 2. mrepo.save(mitgliedUpdate);
         return new ResponseEntity<>(updatedMitglied, HttpStatus.OK);
     }
 

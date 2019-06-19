@@ -1,5 +1,7 @@
 package de.thro.vv.kleiderkreisel.server.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -20,18 +22,16 @@ public class Tausch {
     @JoinColumn (name = "kaeufer_id")
     private Mitglied kaeufer;
 
-    @ManyToOne (fetch = FetchType.EAGER)
-    @JoinColumn (name = "kleidung_id")
-    private Kleidung kleidung;
+    private String marke;
 
     // Optimistische Strategie über Versionszähler zur Vermeidung des Lost-Update-Problems
     @Version
     private Long version;
-
     public Tausch() { }
 
-    public Tausch(LocalDateTime tauschdatum) {
+    public Tausch(LocalDateTime tauschdatum, String marke) {
         this.tauschdatum = tauschdatum;
+        this.marke = marke;
         this.version = 0L;
     }
 
@@ -75,12 +75,12 @@ public class Tausch {
         this.version = version;
     }
 
-    public Kleidung getKleidung() {
-        return kleidung;
+    public String getMarke() {
+        return marke;
     }
 
-    public void setKleidung(Kleidung kleidung) {
-        this.kleidung = kleidung;
+    public void setMarke(String marke) {
+        this.marke = marke;
     }
 
     @Override

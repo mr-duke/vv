@@ -78,10 +78,9 @@ public class TauschControllerProxy {
         Mitglied kaeuferUpdated = response2.getBody();
 
         // Neuen Tauschvorgang anlegen
-        Tausch tausch = new Tausch(LocalDateTime.now());
+        Tausch tausch = new Tausch(LocalDateTime.now(), kleidung.getHersteller());
         tausch.setKaeufer(kaeuferUpdated);
         tausch.setVerkaeufer(verkaeuferUpdated);
-        tausch.setKleidung(kleidung);
 
         restTemplate = new RestTemplate();
         HttpEntity<Tausch> entity3 = new HttpEntity<>(tausch, httpHeaders);

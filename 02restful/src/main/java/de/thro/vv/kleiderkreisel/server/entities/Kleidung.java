@@ -2,6 +2,7 @@ package de.thro.vv.kleiderkreisel.server.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
 import java.util.LinkedList;
@@ -35,28 +36,25 @@ public class Kleidung {
     @Version
     private Long version;
 
-    @JsonIgnore
-    @OneToMany (mappedBy = "kleidung", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Tausch> tauschvorgaenge = new LinkedList<>();
-
-    @ManyToOne (fetch = FetchType.LAZY)
+    @ManyToOne (fetch = FetchType.EAGER)
     @JsonBackReference
     @JoinColumn (name = "besitzer_id")
     private Mitglied besitzer;
 
-    public enum Kleidergroesse {S, M, L, XL};
-    // m = männlich, w = weiblich
-    public enum Geschlecht {M, W};
-    public enum Typ {HOSE, KLEID, HEMD, BLUSE, SHIRT, PULLOVER, ANZUG}
+    public enum Kleidergroesse {S, M, L, XL;};
 
+    // m = männlich, w = weiblich
+    public enum Geschlecht {M, W;};
+
+    public enum Typ {HOSE, KLEID, HEMD, BLUSE, SHIRT, PULLOVER, ANZUG;}
     public Kleidung() {
     }
 
     // Falls Foto nicht angegeben
+
     public Kleidung(long neupreis, long tauschwert, Kleidergroesse groesse, Geschlecht geschlecht, Typ typ, String hersteller) {
         this (neupreis, tauschwert, groesse, geschlecht, typ, hersteller, null);
     }
-
     public Kleidung(long neupreis, long tauschwert, Kleidergroesse groesse, Geschlecht geschlecht, Typ typ, String hersteller, String foto) {
         this.neupreis = neupreis;
         if (priceChecker(neupreis, tauschwert)) {
@@ -70,17 +68,6 @@ public class Kleidung {
         this.hersteller = hersteller;
         this.foto = foto;
         this.version = 0L;
-    }
-
-    // add und remove-Methoden zur Synchronisierung der bidirektionalen Beziehung zwischen Kleidung und Tausch
-    public void addTausch (Tausch tausch){
-        tauschvorgaenge.add(tausch);
-        tausch.setKleidung(this);
-    }
-
-    public void removeTausch (Tausch tausch){
-        tauschvorgaenge.remove(tausch);
-        tausch.setKleidung(null);
     }
 
     // Tauschwert muss zwischen 10 und 50 % vom Neupreis liegen
