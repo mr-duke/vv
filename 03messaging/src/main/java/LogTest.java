@@ -6,7 +6,7 @@ public class LogTest {
 
     public static void main(String[] args) {
 
-        LOGGER.debug("This is debug message");
+        /*LOGGER.debug("This is debug message");
 
         LOGGER.info("This is info message");
 
@@ -16,7 +16,18 @@ public class LogTest {
 
         LOGGER.error("This is error message");
 
-        System.out.println("Logic executed successfully....");
+        System.out.println("Logic executed successfully....");*/
 
+        TelematikEinheit t1 = new TelematikEinheit();
+        TelematikEinheit t2 = new TelematikEinheit();
+        TelematikEinheit t3 = new TelematikEinheit();
+        TelematikEinheit t4 = new TelematikEinheit();
+        TelematikEinheit t5 = new TelematikEinheit();
+
+        LOGGER.info(t1.id);
+        LOGGER.info(t2.id);
+        LOGGER.info(t3.id);
+        LOGGER.info(t4.id);
+        LOGGER.info(t5.id);
     }
 }
