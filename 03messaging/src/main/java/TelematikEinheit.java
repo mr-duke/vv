@@ -70,6 +70,7 @@ public class TelematikEinheit {
             session.close();
             connection.stop();
             connection.close();
+            LOGGER.info(String.format("Verbindung mit TelematikEinheit %d wurde beendet", einheit.getId()));
         } catch (JMSException e) {
             LOGGER.error(e.getMessage());
         }

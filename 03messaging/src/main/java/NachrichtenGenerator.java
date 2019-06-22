@@ -13,20 +13,20 @@ public class NachrichtenGenerator {
         this.telematikId = telematikId;
     }
 
+    // Erzeugt NachrichtDTO-Objekt und serialisiert es als JSON-String
     public String generateNachricht(){
         Gson gson = new Gson();
         String[] gps = gpsSimulator();
         int distance = distanceSimulator();
-        Nachricht nachricht = new Nachricht(telematikId , gps[0], gps[1], distance, LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS));
+        NachrichtDTO nachrichtDTO = new NachrichtDTO(telematikId , gps[0], gps[1], distance, LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS));
 
-        return gson.toJson(nachricht);
+        return gson.toJson(nachrichtDTO);
     }
 
+    // Simuliert zufällige GPS Koordinaten zwischen Rosenheim und Hamburg auf Grundlage folgender Werte (gerundet auf 3 Nachkommastellen):
+    // Hamburg -> Breitengrad 53.550 ; Längengrad 10.001
+    // Rosenheim -> Breitengrad 47.848 ; Längengrad 12.116
     private String[] gpsSimulator(){
-        // Simuliert zufällige GPS Koordinaten zwischen Rosenheim und Hamburg auf Grundlage folgender Werte (gerundet auf 3 Nachkommastellen):
-        // Hamburg -> Breitengrad 53.550 ; Längengrad 10.001
-        // Rosenheim -> Breitengrad 47.848 ; Längengrad 12.116
-
         Random random = new Random();
         int vorkommaBreitengrad = 47 + random.nextInt(7);
         int vorkommaLaengengrad = 10 + random.nextInt(3);

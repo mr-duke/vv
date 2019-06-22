@@ -7,8 +7,8 @@ public class Receiver {
 
     // WICHTIG für mündliche Prüfung:
     // 1. Publisher Subscriber Pattern: asynchrones Observer-Pattern
-    // 2. DurableSubriber: Topic behält Nachricht solange auf, bis alle subscriber angemeldet
-    // und Nachricht abgerufen haben
+    // 2. DurableSubriber: Topic behält NachrichtDTO solange auf, bis alle subscriber angemeldet
+    // und NachrichtDTO abgerufen haben
 
     public static void main(String[] args) throws Exception {
         Properties props = new Properties();

@@ -2,18 +2,18 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-public class Nachricht implements Serializable {
+public class NachrichtDTO implements Serializable {
 
     private long telematikId;
     private String breitengrad;
     private String laengengrad;
     private int streckeGefahren;
-    // Datum und Uhrzeit der Erzeugung der Nachricht
+    // Datum und Uhrzeit der Erzeugung der NachrichtDTO
     private LocalDateTime uhrzeit;
 
-    public Nachricht() {}
+    public NachrichtDTO() {}
 
-    public Nachricht(long telematikId, String breitengrad, String laengengrad, int streckeGefahren, LocalDateTime uhrzeit) {
+    public NachrichtDTO(long telematikId, String breitengrad, String laengengrad, int streckeGefahren, LocalDateTime uhrzeit) {
         this.telematikId = telematikId;
         this.breitengrad = breitengrad;
         this.laengengrad = laengengrad;
@@ -63,7 +63,7 @@ public class Nachricht implements Serializable {
 
     @Override
     public String toString() {
-        return "Nachricht{" +
+        return "NachrichtDTO{" +
                 "telematikId=" + telematikId +
                 ", breitengrad='" + breitengrad + '\'' +
                 ", laengengrad='" + laengengrad + '\'' +
@@ -76,9 +76,9 @@ public class Nachricht implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Nachricht nachricht = (Nachricht) o;
-        return telematikId == nachricht.telematikId &&
-                Objects.equals(uhrzeit, nachricht.uhrzeit);
+        NachrichtDTO nachrichtDTO = (NachrichtDTO) o;
+        return telematikId == nachrichtDTO.telematikId &&
+                Objects.equals(uhrzeit, nachrichtDTO.uhrzeit);
     }
 
     @Override
