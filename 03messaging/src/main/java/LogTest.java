@@ -21,16 +21,7 @@ public class LogTest {
         System.out.println("Logic executed successfully....");*/
 
         TelematikEinheit t1 = new TelematikEinheit();
-        TelematikEinheit t2 = new TelematikEinheit();
-        TelematikEinheit t3 = new TelematikEinheit();
-        TelematikEinheit t4 = new TelematikEinheit();
-        TelematikEinheit t5 = new TelematikEinheit();
 
-        LOGGER.info(Arrays.toString(t1.gpsSimulator()));
-        LOGGER.info(Arrays.toString(t1.gpsSimulator()));
-        LOGGER.info(Arrays.toString(t1.gpsSimulator()));
-        LOGGER.info(Arrays.toString(t1.gpsSimulator()));
-        LOGGER.info(Arrays.toString(t1.gpsSimulator()));
 
 
     }
