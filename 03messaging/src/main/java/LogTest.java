@@ -1,5 +1,7 @@
 import org.apache.log4j.Logger;
 
+import java.util.Arrays;
+
 public class LogTest {
 
      private static final Logger LOGGER = Logger.getLogger(LogTest.class);
@@ -24,10 +26,12 @@ public class LogTest {
         TelematikEinheit t4 = new TelematikEinheit();
         TelematikEinheit t5 = new TelematikEinheit();
 
-        LOGGER.info(t1.id);
-        LOGGER.info(t2.id);
-        LOGGER.info(t3.id);
-        LOGGER.info(t4.id);
-        LOGGER.info(t5.id);
+        LOGGER.info(Arrays.toString(t1.gpsSimulator()));
+        LOGGER.info(Arrays.toString(t1.gpsSimulator()));
+        LOGGER.info(Arrays.toString(t1.gpsSimulator()));
+        LOGGER.info(Arrays.toString(t1.gpsSimulator()));
+        LOGGER.info(Arrays.toString(t1.gpsSimulator()));
+
+
     }
 }
