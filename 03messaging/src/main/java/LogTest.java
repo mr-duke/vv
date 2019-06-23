@@ -1,6 +1,5 @@
 import org.apache.log4j.Logger;
-
-import java.util.Arrays;
+import telematik.TelematikEinheit;
 
 public class LogTest {
 
@@ -20,7 +19,6 @@ public class LogTest {
 
         System.out.println("Logic executed successfully....");*/
 
-        TelematikEinheit t1 = new TelematikEinheit();
 
 
 

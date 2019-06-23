@@ -1,3 +1,5 @@
+package telematik;
+
 import org.apache.log4j.Logger;
 
 import javax.jms.*;
@@ -8,7 +10,7 @@ import java.util.Properties;
 
 /* Starten mehrerer Telematikeinheiten in IntelliJ:
 *  1. Run -> Edit Configurations
-*  2. Bestehende TelematikEinheit duplizieren oder neu anlegen mit Main class: TelematikEinheit
+*  2. Bestehende telematik.TelematikEinheit duplizieren oder neu anlegen mit Main class: telematik.TelematikEinheit
 *  3. Program arguments: individuelle ID vergeben
 *  4. Apply + OK
 *  5. Run -> Run ...
@@ -56,7 +58,7 @@ public class TelematikEinheit {
             try {
                 Connection connection = connectionFactory.createConnection();
                 connection.start();
-                LOGGER.info(String.format("TelematikEinheit %d hat Verbindung aufgebaut", einheit.getId()));
+                LOGGER.info(String.format("telematik.TelematikEinheit %d hat Verbindung aufgebaut", einheit.getId()));
 
                 Session session =
                         connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
@@ -74,7 +76,7 @@ public class TelematikEinheit {
                 session.close();
                 connection.stop();
                 connection.close();
-                LOGGER.info(String.format("TelematikEinheit %d hat Verbindung beendet", einheit.getId()));
+                LOGGER.info(String.format("telematik.TelematikEinheit %d hat Verbindung beendet", einheit.getId()));
 
                 Thread.sleep(TIME_INTERVALL_SEND);
 

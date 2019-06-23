@@ -1,3 +1,5 @@
+package telematik;
+
 import com.google.gson.Gson;
 
 import java.time.LocalDateTime;
@@ -6,14 +8,14 @@ import java.util.Random;
 
 public class NachrichtenGenerator {
 
-    // ID der TelematikEinheit, für die GPS und Fahrdaten simuliert werden sollen
+    // ID der telematik.TelematikEinheit, für die GPS und Fahrdaten simuliert werden sollen
     private long telematikId;
 
     public NachrichtenGenerator(long telematikId) {
         this.telematikId = telematikId;
     }
 
-    // Erzeugt NachrichtDTO-Objekt und serialisiert es als JSON-String
+    // Erzeugt telematik.NachrichtDTO-Objekt und serialisiert es als JSON-String
     public String generateNachricht(){
         Gson gson = new Gson();
         String[] gps = gpsSimulator();

@@ -1,3 +1,5 @@
+package telematik;
+
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -8,7 +10,7 @@ public class NachrichtDTO implements Serializable {
     private String breitengrad;
     private String laengengrad;
     private int streckeGefahren;
-    // Datum und Uhrzeit der Erzeugung der NachrichtDTO
+    // Datum und Uhrzeit der Erzeugung der telematik.NachrichtDTO
     private LocalDateTime uhrzeit;
 
     public NachrichtDTO() {}
@@ -63,7 +65,7 @@ public class NachrichtDTO implements Serializable {
 
     @Override
     public String toString() {
-        return "NachrichtDTO{" +
+        return "telematik.NachrichtDTO{" +
                 "telematikId=" + telematikId +
                 ", breitengrad='" + breitengrad + '\'' +
                 ", laengengrad='" + laengengrad + '\'' +
