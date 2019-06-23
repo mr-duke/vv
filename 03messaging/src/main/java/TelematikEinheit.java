@@ -4,9 +4,7 @@ import javax.jms.*;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import java.time.LocalDateTime;
 import java.util.Properties;
-import java.util.Random;
 
 public class TelematikEinheit {
 
@@ -23,10 +21,6 @@ public class TelematikEinheit {
         this.id = idCounter;
         idCounter++ ;
         LOGGER.info(String.format("Neue Telematikeinheit mit ID %d angelegt", this.id));
-    }
-
-    public long getId() {
-        return id;
     }
 
     public static void main(String[] args) {
@@ -51,32 +45,41 @@ public class TelematikEinheit {
             LOGGER.error(e.getMessage());
         }
 
-        try {
-            Connection connection = connectionFactory.createConnection();
-            connection.start();
-            Session session =
-                    connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+        while (true) {
+            try {
+                Connection connection = connectionFactory.createConnection();
+                connection.start();
+                LOGGER.info(String.format("TelematikEinheit %d hat Verbindung aufgebaut", einheit.getId()));
 
-            MessageProducer producer =
-                    session.createProducer(destination);
-            producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
+                Session session =
+                        connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 
-            TextMessage message =
-                    session.createTextMessage(generator.generateNachricht());
+                MessageProducer producer =
+                        session.createProducer(destination);
+                producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
 
-            producer.send(message);
+                TextMessage message =
+                        session.createTextMessage(generator.generateNachricht());
 
-            producer.close();
-            session.close();
-            connection.stop();
-            connection.close();
-            LOGGER.info(String.format("Verbindung mit TelematikEinheit %d wurde beendet", einheit.getId()));
-        } catch (JMSException e) {
-            LOGGER.error(e.getMessage());
+                producer.send(message);
+
+                producer.close();
+                session.close();
+                connection.stop();
+                connection.close();
+                LOGGER.info(String.format("TelematikEinheit %d hat Verbindung beendet", einheit.getId()));
+
+                Thread.sleep(TIME_INTERVALL_SEND);
+
+            } catch (JMSException e) {
+                LOGGER.error(e.getMessage());
+            } catch (InterruptedException e) {
+                LOGGER.error(e.getMessage());
+            }
         }
-
     }
 
-
-
+    public long getId() {
+        return id;
+    }
 }
