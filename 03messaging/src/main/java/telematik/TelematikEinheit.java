@@ -69,6 +69,7 @@ public class TelematikEinheit {
 
                 TextMessage message =
                         session.createTextMessage(generator.generateNachricht());
+                message.setStringProperty("TelematikId", String.valueOf(einheit.getId()));
 
                 producer.send(message);
 

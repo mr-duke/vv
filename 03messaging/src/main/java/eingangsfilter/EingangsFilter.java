@@ -57,8 +57,8 @@ public class EingangsFilter {
 
             while (true) {
                 TextMessage message = (TextMessage) consumer.receive(0);
-                LOGGER.info(message.getText());
-                publish(message.getText());
+                LOGGER.info(message);
+                publish(message);
             }
 
         } catch (JMSException e) {
@@ -66,7 +66,7 @@ public class EingangsFilter {
         }
     }
 
-    public static void publish(String message) {
+    public static void publish(TextMessage message) {
 
         try {
             Connection connection = connectionFactory.createConnection();
@@ -81,8 +81,8 @@ public class EingangsFilter {
                     session.createProducer(destination);
             publisher.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
 
-            TextMessage msg = session.createTextMessage(message);
-            publisher.send(msg);
+            //TextMessage msg = session.createTextMessage(message);
+            publisher.send(message);
 
             publisher.close();
             session.close();
