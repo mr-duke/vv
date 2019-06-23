@@ -6,6 +6,14 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import java.util.Properties;
 
+/* Starten mehrerer Telematikeinheiten in IntelliJ:
+*  1. Run -> Edit Configurations
+*  2. Bestehende TelematikEinheit duplizieren oder neu anlegen mit Main class: TelematikEinheit
+*  3. Program arguments: individuelle ID vergeben
+*  4. Apply + OK
+*  5. Run -> Run ...
+* */
+
 public class TelematikEinheit {
 
     private static final Logger LOGGER = Logger.getLogger(TelematikEinheit.class);
@@ -14,18 +22,17 @@ public class TelematikEinheit {
     private static final String QUEUE_NAME = "dynamicQueues/fahrdaten";
 
     private long id;
-    // Statischer Zähler zum Erzeugen eindeutiger IDs beim Erzeugen eines neuen Objekts im Konstruktor
-    public static long idCounter = 1;
 
-    TelematikEinheit() {
-        this.id = idCounter;
-        idCounter++ ;
+    TelematikEinheit(long id) {
+        this.id = id;
         LOGGER.info(String.format("Neue Telematikeinheit mit ID %d angelegt", this.id));
     }
 
+    TelematikEinheit(){}
+
     public static void main(String[] args) {
 
-        TelematikEinheit einheit = new TelematikEinheit();
+        TelematikEinheit einheit = new TelematikEinheit(Long.parseLong(args[0]));
         NachrichtenGenerator generator = new NachrichtenGenerator(einheit.getId());
 
         Properties props = new Properties();
