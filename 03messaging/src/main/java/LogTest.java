@@ -1,5 +1,4 @@
 import org.apache.log4j.Logger;
-import telematik.TelematikEinheit;
 
 public class LogTest {
 
@@ -18,6 +17,7 @@ public class LogTest {
         LOGGER.error("This is error message");
 
         System.out.println("Logic executed successfully....");*/
+
 
 
 
