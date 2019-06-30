@@ -12,13 +12,13 @@ public class EingangsFilter {
     private static final Logger LOGGER = Logger.getLogger(EingangsFilter.class);
     private static final String QUEUE_NAME = "dynamicQueues/fahrdaten";
     private static final String TOPIC_NAME = "verteiler";
+    private static final String TOPIC_NAME_ALARM = "alarme";
 
     private static Properties props;
     private static Context ctx;
     private static ConnectionFactory connectionFactory;
     private static Queue source;
     private static Topic destination;
-
 
     public static void main(String[] args) {
         initialize();
@@ -75,7 +75,12 @@ public class EingangsFilter {
             Session session =
                     connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 
-            destination = (Topic) session.createTopic(TOPIC_NAME);
+            boolean isAlarme = message.getBooleanProperty("Alarm");
+            if (isAlarme){
+                destination = (Topic) session.createTopic(TOPIC_NAME_ALARM);
+            } else {
+                destination = (Topic) session.createTopic(TOPIC_NAME);
+            }
 
             MessageProducer publisher =
                     session.createProducer(destination);

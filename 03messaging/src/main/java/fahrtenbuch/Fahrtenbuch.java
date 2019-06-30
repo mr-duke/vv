@@ -45,6 +45,7 @@ public class Fahrtenbuch {
                     connection.createSession(false,Session.AUTO_ACKNOWLEDGE);
             Topic source = (Topic) session.createTopic(TOPIC_NAME);
 
+            // Erzeuge DurableSubscriber
             MessageConsumer consumer =
                     session.createDurableSubscriber(source, "fahrtenbuch");
 
@@ -98,7 +99,7 @@ public class Fahrtenbuch {
     public static void addMessagesToList(String telematikId, Nachricht nachricht) {
         List<Nachricht> nachrichtenAsList = nachrichten.getOrDefault(telematikId, null);
 
-        // Falls noch keine List<Nachricht> für Key (=TelematikId) vorhanden, lege neue Liste an und füge erste Nachricht dazu
+        // Falls noch keine List<Nachricht> für Key (= telematikId) vorhanden, lege neue Liste an und füge erste Nachricht dazu
         // Dann in Map unter entsprechendem Key abspeichern
         if (nachrichtenAsList == null){
             List<Nachricht> tempList = new LinkedList<>();
@@ -115,7 +116,7 @@ public class Fahrtenbuch {
     public static void calculateTotalDistance(String telematikId){
         List<Nachricht> nachrichtenAsList = nachrichten.getOrDefault(telematikId, null);
 
-        // Falls List<Nachricht> für Key (=telematikId) noch leer, zurückfahrene Kilometer == 0
+        // Falls List<Nachricht> für Key (= telematikId) noch leer, zurückfahrene Kilometer == 0
         if (nachrichtenAsList.size() == 0){
             LOGGER.info(String.format("Einheit %s: Gesamtkilometer 0", telematikId));
         } else {

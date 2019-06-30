@@ -7,14 +7,16 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import java.util.Properties;
+import java.util.Random;
 
-/* Starten mehrerer Telematikeinheiten in IntelliJ:
-*  1. Run -> Edit Configurations
-*  2. Bestehende telematik.TelematikEinheit duplizieren oder neu anlegen mit Main class: telematik.TelematikEinheit
-*  3. Program arguments: individuelle ID vergeben
-*  4. Apply + OK
-*  5. Run -> Run ...
-* */
+/* Kommentar: Karl Herzog
+ * Starten mehrerer Telematikeinheiten in IntelliJ:
+ *  1. Run -> Edit Configurations
+ *  2. Bestehende telematik.TelematikEinheit duplizieren oder neu anlegen mit Main class: telematik.TelematikEinheit
+ *  3. Program arguments: individuelle ID vergeben
+ *  4. Apply + OK
+ *  5. Run -> Run ...
+ * */
 
 public class TelematikEinheit {
 
@@ -54,6 +56,12 @@ public class TelematikEinheit {
             LOGGER.error(e.getMessage());
         }
 
+        // Timer setzen für später
+        long startTime = System.currentTimeMillis();
+        // Zufälliges Zeitintervall zwischen 15 und 25 Sekunden für Simulation der Alarmnachricht in Millisec
+        Random random = new Random();
+        long timeToAlarm = (15 + random.nextInt(11)) * 1000;
+
         while (true) {
             try {
                 Connection connection = connectionFactory.createConnection();
@@ -69,18 +77,36 @@ public class TelematikEinheit {
 
                 TextMessage message =
                         session.createTextMessage(generator.generateNachricht());
-                message.setStringProperty("TelematikId", String.valueOf(einheit.getId()));
 
-                producer.send(message);
+                // Sende Alarm-Nachricht, sobald timeToAlarm verstrichen
+                if (System.currentTimeMillis() - startTime >= timeToAlarm ) {
+                    message.setBooleanProperty("Alarm", true);
+                    message.setStringProperty("TelematikId", String.valueOf(einheit.getId()));
 
-                producer.close();
-                session.close();
-                connection.stop();
-                connection.close();
-                LOGGER.info(String.format("TelematikEinheit %d hat Verbindung beendet", einheit.getId()));
+                    producer.send(message);
 
-                Thread.sleep(TIME_INTERVALL_SEND);
+                    producer.close();
+                    session.close();
+                    connection.stop();
+                    connection.close();
+                    LOGGER.fatal(String.format("TelematikEinheit %d hat Alarm gesendet!", einheit.getId()));
+                    // Telematik-Einheit im Alarmfall herunterfahren
+                    return;
 
+                    // Ansonsten schicke reguläre Nachrichten
+                } else {
+                    message.setStringProperty("TelematikId", String.valueOf(einheit.getId()));
+
+                    producer.send(message);
+
+                    producer.close();
+                    session.close();
+                    connection.stop();
+                    connection.close();
+                    LOGGER.info(String.format("TelematikEinheit %d hat Verbindung beendet", einheit.getId()));
+
+                    Thread.sleep(TIME_INTERVALL_SEND);
+                }
             } catch (JMSException e) {
                 LOGGER.error(e.getMessage());
             } catch (InterruptedException e) {
