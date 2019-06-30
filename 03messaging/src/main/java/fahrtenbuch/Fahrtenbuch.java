@@ -7,19 +7,16 @@ import javax.jms.*;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 
 public class Fahrtenbuch {
 
     private static final Logger LOGGER = Logger.getLogger(Fahrtenbuch.class);
     private static final String TOPIC_NAME = "verteiler";
 
-    public static List<Nachricht> nachrichtenEinheit1 = new LinkedList<>();
-    public static List<Nachricht> nachrichtenEinheit2 = new LinkedList<>();
-    public static List<Nachricht> nachrichtenEinheit3 = new LinkedList<>();
-    public static List<Nachricht> nachrichtenEinheit4 = new LinkedList<>();
+    // Key = ID der Telematik-Einheit
+    // Value = Liste aller Nachrichten der jeweiligen Einheit
+    public static Map<String, List<Nachricht>> nachrichten = new HashMap<> ();
 
 
     public static void main(String[] args) {
@@ -41,72 +38,69 @@ public class Fahrtenbuch {
 
         try {
             Connection connection = connectionFactory.createConnection();
+            connection.setClientID("fahrtenbuch");
             connection.start();
 
             Session session =
                     connection.createSession(false,Session.AUTO_ACKNOWLEDGE);
             Topic source = (Topic) session.createTopic(TOPIC_NAME);
 
-            String selectorEinheit1 = "(TelematikId= '1')";
-            String selectorEinheit2 = "(TelematikId= '2')";
-            String selectorEinheit3 = "(TelematikId= '3')";
-            String selectorEinheit4 = "(TelematikId= '4')";
-
-            MessageConsumer consumer1 =
-                    session.createConsumer(source, selectorEinheit1);
-            MessageConsumer consumer2 =
-                    session.createConsumer(source, selectorEinheit2);
-            MessageConsumer consumer3 =
-                    session.createConsumer(source, selectorEinheit3);
-            MessageConsumer consumer4 =
-                    session.createConsumer(source, selectorEinheit4);
+            MessageConsumer consumer =
+                    session.createDurableSubscriber(source, "fahrtenbuch");
 
             Gson gson = new Gson();
 
-            // TO DO
-            // Durable Subscriber
-            // statt while true for-Schleife
-
             while (true) {
-                TextMessage messageEinheit1 = (TextMessage) consumer1.receive(0);
-                Nachricht einheit1 = gson.fromJson(messageEinheit1.getText(), Nachricht.class);
-                nachrichtenEinheit1.add(einheit1);
+                TextMessage messageEinheit = (TextMessage) consumer.receive(0);
+                String messageId = messageEinheit.getStringProperty("TelematikId");
+                Nachricht nachricht = gson.fromJson(messageEinheit.getText(), Nachricht.class);
+                addMessagesToList(messageId, nachricht);
 
-                TextMessage messageEinheit2 = (TextMessage) consumer2.receive(0);
-                Nachricht einheit2 = gson.fromJson(messageEinheit2.getText(), Nachricht.class);
-                nachrichtenEinheit2.add(einheit2);
-
-                TextMessage messageEinheit3 = (TextMessage) consumer3.receive(0);
-                Nachricht einheit3 = gson.fromJson(messageEinheit3.getText(), Nachricht.class);
-                nachrichtenEinheit3.add(einheit3);
-
-                TextMessage messageEinheit4 = (TextMessage) consumer4.receive(0);
-                Nachricht einheit4 = gson.fromJson(messageEinheit4.getText(), Nachricht.class);
-                nachrichtenEinheit4.add(einheit4);
-
-                /*LOGGER.info("Einheit 1: ");
-                for (Nachricht nachricht : nachrichtenEinheit1) {
-                    LOGGER.info(nachricht.toString());
+                LOGGER.info("Einheit 1");
+                List<Nachricht> nachrichtenEinheit1 = nachrichten.getOrDefault("1", null);
+                if (nachrichtenEinheit1 != null){
+                    for (Nachricht n : nachrichtenEinheit1) {
+                        LOGGER.info(n.toString());
+                    }
                 }
 
-                LOGGER.info("Einheit 2: ");
-                for (Nachricht nachricht : nachrichtenEinheit2) {
-                    LOGGER.info(nachricht.toString());
+                LOGGER.info("Einheit 2");
+                List<Nachricht> nachrichtenEinheit2 = nachrichten.getOrDefault("2", null);
+                if (nachrichtenEinheit2 != null){
+                    for (Nachricht n : nachrichtenEinheit2) {
+                        LOGGER.info(n.toString());
+                    }
                 }
 
-                LOGGER.info("Einheit 3: ");
-                for (Nachricht nachricht : nachrichtenEinheit3) {
-                    LOGGER.info(nachricht.toString());
+                LOGGER.info("Einheit 3");
+                List<Nachricht> nachrichtenEinheit3 = nachrichten.getOrDefault("3", null);
+                if (nachrichtenEinheit3 != null){
+                    for (Nachricht n : nachrichtenEinheit3) {
+                        LOGGER.info(n.toString());
+                    }
                 }
 
-                LOGGER.info("Einheit 4: ");
-                for (Nachricht nachricht : nachrichtenEinheit4) {
-                    LOGGER.info(nachricht.toString());
-                }*/
 
             }
         } catch (JMSException e) {
             LOGGER.error(e.getMessage());
+        }
+    }
+
+    public static void addMessagesToList(String key, Nachricht nachricht) {
+        List<Nachricht> nachrichtenAsList = nachrichten.getOrDefault(key, null);
+
+        // Falls noch keine List<Nachricht> für Key (=TelematikId) vorhanden, lege neue Liste an und füge erste Nachricht dazu
+        // Dann in Map unter entsprechendem Key abspeichern
+        if (nachrichtenAsList == null){
+            List<Nachricht> tempList = new LinkedList<>();
+            tempList.add(nachricht);
+            nachrichten.put(key,tempList);
+        } else {
+            // FalLs bereits Liste an Nachrichten vorhanden, füge neue Nachricht hinzu
+            // Dann in Map unter entsprechendem Key abspeichern
+            nachrichtenAsList.add(nachricht);
+            nachrichten.put(key, nachrichtenAsList);
         }
     }
 }

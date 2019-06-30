@@ -58,7 +58,7 @@ public class TelematikEinheit {
             try {
                 Connection connection = connectionFactory.createConnection();
                 connection.start();
-                LOGGER.info(String.format("telematik.TelematikEinheit %d hat Verbindung aufgebaut", einheit.getId()));
+                LOGGER.info(String.format("TelematikEinheit %d hat Verbindung aufgebaut", einheit.getId()));
 
                 Session session =
                         connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
@@ -77,7 +77,7 @@ public class TelematikEinheit {
                 session.close();
                 connection.stop();
                 connection.close();
-                LOGGER.info(String.format("telematik.TelematikEinheit %d hat Verbindung beendet", einheit.getId()));
+                LOGGER.info(String.format("TelematikEinheit %d hat Verbindung beendet", einheit.getId()));
 
                 Thread.sleep(TIME_INTERVALL_SEND);
 
