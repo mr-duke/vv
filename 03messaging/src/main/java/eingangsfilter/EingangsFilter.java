@@ -57,7 +57,7 @@ public class EingangsFilter {
 
             while (true) {
                 TextMessage message = (TextMessage) consumer.receive(0);
-                LOGGER.info(message);
+                LOGGER.info(message.getText());
                 publish(message);
             }
 
@@ -81,7 +81,6 @@ public class EingangsFilter {
                     session.createProducer(destination);
             publisher.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
 
-            //TextMessage msg = session.createTextMessage(message);
             publisher.send(message);
 
             publisher.close();
