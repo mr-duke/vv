@@ -8,9 +8,12 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import java.util.Properties;
 
-public class MessagingService {
+/* Drei ähnliche Klassen "MessagingService...", allerdings mit leicht unterschiedlichen Funktionen
+ * Weitere Annahme von Karl Herzog: Die drei Packages laufen getrennt voneinander auf unterschiedlichen Systemen und nicht im selben Projekt,
+ * daher absichtlich nicht als eine gemeinsame Utility-Klasse konzipiert */
+public class MessagingServiceFilter {
 
-    private static final Logger LOGGER = Logger.getLogger(MessagingService.class);
+    private static final Logger LOGGER = Logger.getLogger(MessagingServiceFilter.class);
     private final String QUEUE_NAME = "dynamicQueues/fahrdaten";
     private final String TOPIC_NAME = "verteiler";
     private final String TOPIC_NAME_ALARM = "alarme";

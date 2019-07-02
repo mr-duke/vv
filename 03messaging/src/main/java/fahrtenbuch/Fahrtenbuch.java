@@ -4,68 +4,54 @@ import com.google.gson.Gson;
 import org.apache.log4j.Logger;
 
 import javax.jms.*;
-import javax.naming.Context;
-import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import java.util.*;
 
 public class Fahrtenbuch {
 
     private static final Logger LOGGER = Logger.getLogger(Fahrtenbuch.class);
-    private static final String TOPIC_NAME = "verteiler";
-
-    // Key = ID der Telematik-Einheit
-    // Value = Liste aller Nachrichten der jeweiligen Einheit
-    public static Map<String, List<Nachricht>> nachrichten = new HashMap<> ();
 
     public static void main(String[] args) {
-        // initialize()
-        Properties props = new Properties();
-        props.setProperty(Context.INITIAL_CONTEXT_FACTORY,
-                "org.apache.activemq.jndi.ActiveMQInitialContextFactory");
-        props.setProperty(
-                Context.PROVIDER_URL,"tcp://localhost:61616");
 
-        Context ctx = null;
-        ConnectionFactory connectionFactory = null;
+        MessagingServiceFahrtenbuch messagingServiceFahrtenbuch = new MessagingServiceFahrtenbuch();
+        NachrichtenSpeicher nachrichtenSpeicher = new NachrichtenSpeicher();
+        String messageId = null;
+        Nachricht nachricht = null;
+        Gson gson = new Gson();
 
-        try {
-            ctx = new InitialContext(props);
-            connectionFactory = (ConnectionFactory) ctx.lookup("ConnectionFactory");
-        } catch (NamingException e) {
-            LOGGER.error(e.getMessage());
-        }
+        while (true) {
+            try {
+                messagingServiceFahrtenbuch.initialize();
+                messagingServiceFahrtenbuch.connect();
+                TextMessage messageFromEinheit = messagingServiceFahrtenbuch.subscribe();
 
-        try {
-            Connection connection = connectionFactory.createConnection();
-            connection.setClientID("fahrtenbuch");
-            connection.start();
-
-            Session session =
-                    connection.createSession(false,Session.AUTO_ACKNOWLEDGE);
-            Topic source = (Topic) session.createTopic(TOPIC_NAME);
-
-            // Erzeuge DurableSubscriber
-            MessageConsumer consumer =
-                    session.createDurableSubscriber(source, "fahrtenbuch");
-
-            Gson gson = new Gson();
-
-            while (true) {
-                TextMessage messageEinheit = (TextMessage) consumer.receive(0);
-                String messageId = messageEinheit.getStringProperty("TelematikId");
-                Nachricht nachricht = gson.fromJson(messageEinheit.getText(), Nachricht.class);
+                messageId = messageFromEinheit.getStringProperty("TelematikId");
+                nachricht = gson.fromJson(messageFromEinheit.getText(), Nachricht.class);
 
                 // Zur Map nachrichten hinzufügen
-                addMessagesToList(messageId, nachricht);
+                nachrichtenSpeicher.addMessagesToList(messageId, nachricht);
 
                 // Gefahrene Kilometer für jede Telematik-Einheit aktualisieren
-                Set<String> keys = nachrichten.keySet();
+                Set<String> keys = nachrichtenSpeicher.getNachrichten().keySet();
                 for (String key : keys){
-                    calculateTotalDistance(key);
+                    nachrichtenSpeicher.calculateTotalDistance(key);
                 }
 
-                // Nur zu Testzwecken: Ausgabe des Inhalts der Map<String, List<Nachricht>> nachrichten
+            } catch (JMSException | NamingException e) {
+                // Im Fehlerfall loggen, aber weiterlaufen
+                LOGGER.error(e.getMessage(), e);
+
+            } finally {
+                try {
+                    messagingServiceFahrtenbuch.disconnect();
+                } catch (JMSException e) {
+                    // Im Fehlerfall loggen, aber weiterlaufen
+                    LOGGER.error(e.getMessage(), e);
+                }
+            }
+
+
+            // Nur zu Testzwecken: Ausgabe des Inhalts der Map<String, List<Nachricht>> nachrichten
                 /*LOGGER.info("Einheit 1");
                 List<Nachricht> nachrichtenEinheit1 = nachrichten.getOrDefault("1", null);
                 if (nachrichtenEinheit1 != null){
@@ -89,42 +75,6 @@ public class Fahrtenbuch {
                         LOGGER.info(n.toString());
                     }
                 }*/
-
-            }
-        } catch (JMSException e) {
-            LOGGER.error(e.getMessage());
-        }
-    }
-
-    public static void addMessagesToList(String telematikId, Nachricht nachricht) {
-        List<Nachricht> nachrichtenAsList = nachrichten.getOrDefault(telematikId, null);
-
-        // Falls noch keine List<Nachricht> für Key (= telematikId) vorhanden, lege neue Liste an und füge erste Nachricht dazu
-        // Dann in Map unter entsprechendem Key abspeichern
-        if (nachrichtenAsList == null){
-            List<Nachricht> tempList = new LinkedList<>();
-            tempList.add(nachricht);
-            nachrichten.put(telematikId,tempList);
-        } else {
-            // Falls bereits Liste an Nachrichten vorhanden, füge neue Nachricht hinzu
-            // Dann in Map unter entsprechendem Key abspeichern
-            nachrichtenAsList.add(nachricht);
-            nachrichten.put(telematikId, nachrichtenAsList);
-        }
-    }
-
-    public static void calculateTotalDistance(String telematikId){
-        List<Nachricht> nachrichtenAsList = nachrichten.getOrDefault(telematikId, null);
-
-        // Falls List<Nachricht> für Key (= telematikId) noch leer, zurückfahrene Kilometer == 0
-        if (nachrichtenAsList.size() == 0){
-            LOGGER.info(String.format("Einheit %s: Gesamtkilometer 0", telematikId));
-        } else {
-           int gefahrenInKM = 0;
-           for (Nachricht n : nachrichtenAsList){
-               gefahrenInKM += n.getStreckeGefahren();
-           }
-           LOGGER.info(String.format("Einheit %s: Gesamtkilometer %d", telematikId, gefahrenInKM));
         }
     }
 }

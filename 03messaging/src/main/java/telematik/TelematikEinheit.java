@@ -33,18 +33,18 @@ public class TelematikEinheit {
 
         TelematikEinheit einheit = new TelematikEinheit(Long.parseLong(args[0]));
         NachrichtenGenerator generator = new NachrichtenGenerator(einheit.getId());
-        MessagingService messagingService = new MessagingService();
+        MessagingServiceTelematik messagingServiceTelematik = new MessagingServiceTelematik();
 
-        // Timer setzen für später
+        // Timer setzen für späteren zufälligen Alarm
         long startTime = System.currentTimeMillis();
-        // Zufälliges Zeitintervall zwischen 15 und 25 Sekunden für Simulation der Alarmnachricht in Millisec
+        // Zufälliges Zeitintervall zwischen 30 und 45 Sekunden für Simulation der Alarmnachricht in Millisec
         Random random = new Random();
-        long timeToAlarm = (15 + random.nextInt(11)) * 1000;
+        long timeToAlarm = (30 + random.nextInt(16)) * 1000;
 
         while (true) {
             try {
-                messagingService.initialize();
-                messagingService.connect();
+                messagingServiceTelematik.initialize();
+                messagingServiceTelematik.connect();
                 LOGGER.info(String.format("TelematikEinheit %d hat Verbindung aufgebaut", einheit.getId()));
 
                 String msg = generator.generateNachricht();
@@ -55,7 +55,7 @@ public class TelematikEinheit {
                     isAlarm = false;
                 }
 
-                messagingService.publish(msg, String.valueOf(einheit.getId()), isAlarm);
+                messagingServiceTelematik.send(msg, String.valueOf(einheit.getId()), isAlarm);
                 if (isAlarm) {
                     LOGGER.fatal(String.format("TelematikEinheit %d hat Alarm gesendet!", einheit.getId()));
                     // Telematik-Einheit im Alarmfall herunterfahren. Ansonsten schicke weiterhin Nachrichten
@@ -69,9 +69,9 @@ public class TelematikEinheit {
             } finally {
                 // Am Ende jedes Durchlaufs Verbindung schließen
                 try {
-                    messagingService.disconnect();
+                    messagingServiceTelematik.disconnect();
                     LOGGER.info(String.format("TelematikEinheit %d hat Verbindung beendet", einheit.getId()));
-                    
+
                     Thread.sleep(TIME_INTERVALL_SEND);
 
                 } catch (JMSException | InterruptedException e) {
