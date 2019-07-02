@@ -96,5 +96,6 @@ public class EingangsFilter {
         } catch (JMSException e){
             LOGGER.error(e.getMessage());
         }
+        //finally
     }
 }

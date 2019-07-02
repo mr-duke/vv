@@ -18,8 +18,8 @@ public class Fahrtenbuch {
     // Value = Liste aller Nachrichten der jeweiligen Einheit
     public static Map<String, List<Nachricht>> nachrichten = new HashMap<> ();
 
-
     public static void main(String[] args) {
+        // initialize()
         Properties props = new Properties();
         props.setProperty(Context.INITIAL_CONTEXT_FACTORY,
                 "org.apache.activemq.jndi.ActiveMQInitialContextFactory");

@@ -54,6 +54,7 @@ public class TelematikEinheit {
             destination = (Queue) ctx.lookup(QUEUE_NAME);
         } catch (NamingException e) {
             LOGGER.error(e.getMessage());
+            return;
         }
 
         // Timer setzen für später
@@ -107,11 +108,13 @@ public class TelematikEinheit {
 
                     Thread.sleep(TIME_INTERVALL_SEND);
                 }
+                // Exception ; stacktrace
             } catch (JMSException e) {
                 LOGGER.error(e.getMessage());
             } catch (InterruptedException e) {
                 LOGGER.error(e.getMessage());
             }
+            //finally
         }
     }
 
