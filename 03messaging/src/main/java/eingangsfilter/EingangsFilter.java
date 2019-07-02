@@ -10,92 +10,29 @@ import java.util.Properties;
 public class EingangsFilter {
 
     private static final Logger LOGGER = Logger.getLogger(EingangsFilter.class);
-    private static final String QUEUE_NAME = "dynamicQueues/fahrdaten";
-    private static final String TOPIC_NAME = "verteiler";
-    private static final String TOPIC_NAME_ALARM = "alarme";
-
-    private static Properties props;
-    private static Context ctx;
-    private static ConnectionFactory connectionFactory;
-    private static Queue source;
-    private static Topic destination;
 
     public static void main(String[] args) {
-        initialize();
-        receive();
-    }
+        MessagingService messagingService = new MessagingService();
 
+        while (true) {
+            try {
+                messagingService.initialize();
+                messagingService.connect();
+                Message msg = messagingService.receive();
+                messagingService.publish(msg);
 
-    public static void initialize () {
-        props = new Properties();
-        props.setProperty(Context.INITIAL_CONTEXT_FACTORY,
-                "org.apache.activemq.jndi.ActiveMQInitialContextFactory");
-        props.setProperty(
-                Context.PROVIDER_URL, "tcp://localhost:61616");
+            } catch (NamingException | JMSException e) {
+                // Im Fehlerfall loggen, aber weiterlaufen
+                LOGGER.error(e.getMessage(), e);
 
-        try {
-            ctx = new InitialContext(props);
-            connectionFactory = (ConnectionFactory) ctx.lookup("ConnectionFactory");
-            source = (Queue) ctx.lookup(QUEUE_NAME);
-        } catch (NamingException e) {
-            LOGGER.error(e.getMessage());
-        }
-    }
-
-
-    public static void receive (){
-
-        try {
-            Connection connection = connectionFactory.createConnection();
-            connection.start();
-
-            Session session =
-                    connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-
-            MessageConsumer consumer =
-                    session.createConsumer(source);
-
-            while (true) {
-                TextMessage message = (TextMessage) consumer.receive(0);
-                LOGGER.info(message.getText());
-                publish(message);
+            } finally {
+                try {
+                    messagingService.disconnect();
+                } catch (JMSException e) {
+                    // Im Fehlerfall loggen, aber weiterlaufen
+                    LOGGER.error(e.getMessage(), e);
+                }
             }
-
-        } catch (JMSException e) {
-            LOGGER.error(e.getMessage());
         }
-    }
-
-    public static void publish(TextMessage message) {
-
-        try {
-            Connection connection = connectionFactory.createConnection();
-            connection.start();
-
-            Session session =
-                    connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-
-            boolean isAlarme = message.getBooleanProperty("Alarm");
-            if (isAlarme){
-                destination = (Topic) session.createTopic(TOPIC_NAME_ALARM);
-            } else {
-                destination = (Topic) session.createTopic(TOPIC_NAME);
-            }
-
-            MessageProducer publisher =
-                    session.createProducer(destination);
-            publisher.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
-
-            publisher.send(message);
-
-            publisher.close();
-            session.close();
-            connection.stop();
-            connection.close();
-
-        } catch (JMSException e){
-            LOGGER.error(e.getMessage());
-        }
-        //finally
     }
 }

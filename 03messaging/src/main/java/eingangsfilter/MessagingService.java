@@ -1,4 +1,4 @@
-package telematik;
+package eingangsfilter;
 
 import org.apache.log4j.Logger;
 
@@ -10,12 +10,17 @@ import java.util.Properties;
 
 public class MessagingService {
 
+    private static final Logger LOGGER = Logger.getLogger(MessagingService.class);
     private final String QUEUE_NAME = "dynamicQueues/fahrdaten";
+    private final String TOPIC_NAME = "verteiler";
+    private final String TOPIC_NAME_ALARM = "alarme";
 
     private Connection connection;
     private Session session;
-    private MessageProducer producer;
-
+    private MessageConsumer consumer;
+    private MessageProducer publisher;
+    private Queue source;
+    private Topic destination;
 
     public void initialize() throws NamingException, JMSException {
         Properties props = new Properties();
@@ -26,28 +31,39 @@ public class MessagingService {
 
         Context ctx = new InitialContext(props);
         ConnectionFactory connectionFactory = (ConnectionFactory) ctx.lookup("ConnectionFactory");;
-        Queue destination = (Queue) ctx.lookup(QUEUE_NAME);
-
+        source = (Queue) ctx.lookup(QUEUE_NAME);
         connection = connectionFactory.createConnection();
         session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-        producer = session.createProducer(destination);
-        producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
+        consumer = session.createConsumer(source);
     }
 
     public void connect() throws JMSException {
         connection.start();
     }
 
-    public void publish(String msg, String telematikId, boolean isAlarm) throws JMSException {
-        TextMessage textMessage = session.createTextMessage(msg);
-        textMessage.setStringProperty("TelematikId", telematikId);
-        textMessage.setBooleanProperty("Alarm", isAlarm);
+    public Message receive() throws JMSException {
+        TextMessage message = (TextMessage) consumer.receive(0);
+        LOGGER.info(message.getText());
+        return message;
+    }
 
-        producer.send(textMessage);
+    public void publish(Message message) throws JMSException {
+        boolean isAlarm = message.getBooleanProperty("Alarm");
+
+        if (isAlarm){
+            destination = (Topic) session.createTopic(TOPIC_NAME_ALARM);
+        } else {
+            destination = (Topic) session.createTopic(TOPIC_NAME);
+        }
+
+        publisher = session.createProducer(destination);
+        publisher.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
+
+        publisher.send(message);
     }
 
     public void disconnect() throws JMSException{
-        producer.close();
+        publisher.close();
         session.close();
         connection.stop();
         connection.close();

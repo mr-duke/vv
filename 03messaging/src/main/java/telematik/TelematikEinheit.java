@@ -62,9 +62,7 @@ public class TelematikEinheit {
                     return;
                 }
 
-                Thread.sleep(TIME_INTERVALL_SEND);
-
-            } catch (JMSException | NamingException | InterruptedException e) {
+            } catch (JMSException | NamingException e) {
                 // Im Fehlerfall loggen, aber weiterlaufen
                 LOGGER.error(e.getMessage(), e);
 
@@ -73,8 +71,10 @@ public class TelematikEinheit {
                 try {
                     messagingService.disconnect();
                     LOGGER.info(String.format("TelematikEinheit %d hat Verbindung beendet", einheit.getId()));
+                    
+                    Thread.sleep(TIME_INTERVALL_SEND);
 
-                } catch (JMSException e) {
+                } catch (JMSException | InterruptedException e) {
                     // Im Fehlerfall loggen und Telematik-Einheit herunterfahren
                     LOGGER.error(e.getMessage(), e);
                     return;
