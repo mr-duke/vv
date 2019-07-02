@@ -3,10 +3,7 @@ package telematik;
 import org.apache.log4j.Logger;
 
 import javax.jms.*;
-import javax.naming.Context;
-import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import java.util.Properties;
 import java.util.Random;
 
 /* Kommentar: Karl Herzog
@@ -23,8 +20,6 @@ public class TelematikEinheit {
     private static final Logger LOGGER = Logger.getLogger(TelematikEinheit.class);
     // Sendeintervall der Nachrichten in Millisekunden
     private static final long TIME_INTERVALL_SEND = 5000 ;
-    private static final String QUEUE_NAME = "dynamicQueues/fahrdaten";
-
     private long id;
 
     TelematikEinheit(long id) {
@@ -38,24 +33,7 @@ public class TelematikEinheit {
 
         TelematikEinheit einheit = new TelematikEinheit(Long.parseLong(args[0]));
         NachrichtenGenerator generator = new NachrichtenGenerator(einheit.getId());
-
-        Properties props = new Properties();
-        props.setProperty(Context.INITIAL_CONTEXT_FACTORY,
-                "org.apache.activemq.jndi.ActiveMQInitialContextFactory");
-        props.setProperty(
-                Context.PROVIDER_URL,"tcp://localhost:61616");
-
-        Context ctx = null;
-        ConnectionFactory connectionFactory = null;
-        Queue destination = null;
-        try {
-            ctx = new InitialContext(props);
-            connectionFactory = (ConnectionFactory) ctx.lookup("ConnectionFactory");
-            destination = (Queue) ctx.lookup(QUEUE_NAME);
-        } catch (NamingException e) {
-            LOGGER.error(e.getMessage());
-            return;
-        }
+        MessagingService messagingService = new MessagingService();
 
         // Timer setzen für später
         long startTime = System.currentTimeMillis();
@@ -65,60 +43,47 @@ public class TelematikEinheit {
 
         while (true) {
             try {
-                Connection connection = connectionFactory.createConnection();
-                connection.start();
+                messagingService.initialize();
+                messagingService.connect();
                 LOGGER.info(String.format("TelematikEinheit %d hat Verbindung aufgebaut", einheit.getId()));
 
-                Session session =
-                        connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-
-                MessageProducer producer =
-                        session.createProducer(destination);
-                producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
-
-                TextMessage message =
-                        session.createTextMessage(generator.generateNachricht());
-
-                // Sende Alarm-Nachricht, sobald timeToAlarm verstrichen
+                String msg = generator.generateNachricht();
+                boolean isAlarm;
                 if (System.currentTimeMillis() - startTime >= timeToAlarm ) {
-                    message.setBooleanProperty("Alarm", true);
-                    message.setStringProperty("TelematikId", String.valueOf(einheit.getId()));
-
-                    producer.send(message);
-
-                    producer.close();
-                    session.close();
-                    connection.stop();
-                    connection.close();
-                    LOGGER.fatal(String.format("TelematikEinheit %d hat Alarm gesendet!", einheit.getId()));
-                    // Telematik-Einheit im Alarmfall herunterfahren
-                    return;
-
-                    // Ansonsten schicke reguläre Nachrichten
+                    isAlarm = true;
                 } else {
-                    message.setStringProperty("TelematikId", String.valueOf(einheit.getId()));
+                    isAlarm = false;
+                }
 
-                    producer.send(message);
+                messagingService.publish(msg, String.valueOf(einheit.getId()), isAlarm);
+                if (isAlarm) {
+                    LOGGER.fatal(String.format("TelematikEinheit %d hat Alarm gesendet!", einheit.getId()));
+                    // Telematik-Einheit im Alarmfall herunterfahren. Ansonsten schicke weiterhin Nachrichten
+                    return;
+                }
 
-                    producer.close();
-                    session.close();
-                    connection.stop();
-                    connection.close();
+                Thread.sleep(TIME_INTERVALL_SEND);
+
+            } catch (JMSException | NamingException | InterruptedException e) {
+                // Im Fehlerfall loggen, aber weiterlaufen
+                LOGGER.error(e.getMessage(), e);
+
+            } finally {
+                // Am Ende jedes Durchlaufs Verbindung schließen
+                try {
+                    messagingService.disconnect();
                     LOGGER.info(String.format("TelematikEinheit %d hat Verbindung beendet", einheit.getId()));
 
-                    Thread.sleep(TIME_INTERVALL_SEND);
+                } catch (JMSException e) {
+                    // Im Fehlerfall loggen und Telematik-Einheit herunterfahren
+                    LOGGER.error(e.getMessage(), e);
+                    return;
                 }
-                // Exception ; stacktrace
-            } catch (JMSException e) {
-                LOGGER.error(e.getMessage());
-            } catch (InterruptedException e) {
-                LOGGER.error(e.getMessage());
             }
-            //finally
         }
     }
 
-    public long getId() {
+    private long getId() {
         return id;
     }
 }
