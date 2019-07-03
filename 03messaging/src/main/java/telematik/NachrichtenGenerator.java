@@ -15,7 +15,7 @@ public class NachrichtenGenerator {
         this.telematikId = telematikId;
     }
 
-    // Erzeugt telematik.NachrichtDTO-Objekt und serialisiert es als JSON-String
+    // Erzeugt NachrichtDTO-Objekt und serialisiert es als JSON-String
     public String generateNachricht(){
         Gson gson = new Gson();
         String[] gps = gpsSimulator();
@@ -32,8 +32,8 @@ public class NachrichtenGenerator {
         Random random = new Random();
         int vorkommaBreitengrad = 47 + random.nextInt(7);
         int vorkommaLaengengrad = 10 + random.nextInt(3);
-        int nachkommaBreitengrad = random.nextInt(848);
-        int nachkommaLaengengrad = random.nextInt(848);
+        int nachkommaBreitengrad = random.nextInt(849);
+        int nachkommaLaengengrad = random.nextInt(117);
 
         String breitengrad = String.format("%d.%03d", vorkommaBreitengrad, nachkommaBreitengrad);
         String laengengrad = String.format("%d.%03d", vorkommaLaengengrad, nachkommaLaengengrad );

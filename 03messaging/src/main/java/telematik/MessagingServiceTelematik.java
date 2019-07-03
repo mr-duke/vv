@@ -1,7 +1,5 @@
 package telematik;
 
-import org.apache.log4j.Logger;
-
 import javax.jms.*;
 import javax.naming.Context;
 import javax.naming.InitialContext;

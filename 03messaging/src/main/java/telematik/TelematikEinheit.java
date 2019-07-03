@@ -12,7 +12,7 @@ import java.util.Random;
  *  2. Bestehende telematik.TelematikEinheit duplizieren oder neu anlegen mit Main class: telematik.TelematikEinheit
  *  3. Program arguments: individuelle ID vergeben
  *  4. Apply + OK
- *  5. Run -> Run ...
+ *  5. Run
  * */
 
 public class TelematikEinheit {

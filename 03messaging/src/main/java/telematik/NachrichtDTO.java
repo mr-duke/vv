@@ -10,7 +10,7 @@ public class NachrichtDTO implements Serializable {
     private String breitengrad;
     private String laengengrad;
     private int streckeGefahren;
-    // Datum und Uhrzeit der Erzeugung der telematik.NachrichtDTO
+    // Datum und Uhrzeit der Erzeugung des Objekts
     private LocalDateTime uhrzeit;
 
     public NachrichtDTO() {}
